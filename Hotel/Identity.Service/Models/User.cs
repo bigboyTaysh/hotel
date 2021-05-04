@@ -2,15 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
-namespace Identity.Service.Models
+namespace IdentityAPI.Models
 {
     public class User
     {
-        public string Name { get; set; }
-        public string Password { get; set; }
-
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; }
+        [BsonElement("Email")]
         public string Email { get; set; }
-
+        [BsonElement("Password")]
+        public string Password { get; set; }
+        [BsonElement("Role")]
+        public string Role { get; set; }
     }
 }
