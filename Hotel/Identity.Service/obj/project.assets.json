@@ -193,24 +193,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\wolak\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\mandr\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\wolak\\OneDrive\\SEM I\\paiir\\projekt\\Hotel\\Identity.Service\\Identity.Service.csproj",
+      "projectUniqueName": "C:\\Users\\mandr\\Desktop\\oracle designer\\hotel\\hotel\\Hotel\\Identity.Service\\Identity.Service.csproj",
       "projectName": "Identity.Service",
-      "projectPath": "C:\\Users\\wolak\\OneDrive\\SEM I\\paiir\\projekt\\Hotel\\Identity.Service\\Identity.Service.csproj",
-      "packagesPath": "C:\\Users\\wolak\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\wolak\\OneDrive\\SEM I\\paiir\\projekt\\Hotel\\Identity.Service\\obj\\",
+      "projectPath": "C:\\Users\\mandr\\Desktop\\oracle designer\\hotel\\hotel\\Hotel\\Identity.Service\\Identity.Service.csproj",
+      "packagesPath": "C:\\Users\\mandr\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\mandr\\Desktop\\oracle designer\\hotel\\hotel\\Hotel\\Identity.Service\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\wolak\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Users\\mandr\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
