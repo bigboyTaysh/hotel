@@ -1,3 +1,5 @@
+using Identity.Service.DAL;
+using Identity.Service.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -6,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
@@ -26,6 +29,9 @@ namespace Identity.Service
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddSingleton(db => db.GetRequiredService<IOptions<DatabaseSettings>>().Value);
+            services.AddScoped<UserService>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -49,6 +55,7 @@ namespace Identity.Service
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseAuthentication();
 
             app.UseEndpoints(endpoints =>
             {
