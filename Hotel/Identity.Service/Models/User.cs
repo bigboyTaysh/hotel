@@ -7,7 +7,7 @@ namespace Identity.Service.Models
 {
     public class User
     {
-
+        public string Password { get; set; }
 
     }
 }
