@@ -31,13 +31,14 @@ namespace Identity.Service.Services
             return customer;
         }
 
-        public void Update(string id, Customer customerIn) =>
-            _customers.ReplaceOne(customer => customer.Id == id, customerIn);
+        public ReplaceOneResult Update(string id, Customer customerIn) 
+        {
+            return _customers.ReplaceOne(customer => customer.Id == id, customerIn);
+        }
 
-        public void Remove(Customer customerIn) =>
-            _customers.DeleteOne(customer => customer.Id == customerIn.Id);
-
-        public void Remove(string id) =>
-            _customers.DeleteOne(customer => customer.Id == id);
+        public DeleteResult Remove(string id)
+        {
+            return _customers.DeleteOne(customer => customer.Id == id);
+        }
     }
 }

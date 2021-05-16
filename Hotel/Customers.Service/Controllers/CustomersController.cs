@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Customers.Service.Models;
+using Identity.Service.Services;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,36 +14,67 @@ namespace Customers.Service.Controllers
     [ApiController]
     public class CustomersController : ControllerBase
     {
+        private readonly CustomerService service;
+
+        public CustomersController(CustomerService _customerService)
+        {
+            service = _customerService;
+        }
+
         // GET: api/<CustomersController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<Customer> Get()
         {
-            return new string[] { "value1", "value2" };
+            return service.GetCustomers();
         }
 
         // GET api/<CustomersController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public ActionResult Get(string id)
         {
-            return "value";
+            var customer = service.GetCustomer(id);
+
+            if( customer == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(customer);
         }
 
         // POST api/<CustomersController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public ActionResult Post(Customer customer)
         {
+            service.Create(customer);
+
+            return Ok(customer);
         }
 
         // PUT api/<CustomersController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public ActionResult Put(string id, Customer customer)
         {
+            var result = service.Update(id, customer);
+
+            if(result.MatchedCount == 0)
+            {
+                return NotFound();
+            }
+
+            return Ok(customer);
         }
 
         // DELETE api/<CustomersController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public ActionResult Delete(string id)
         {
+            if (service.Remove(id).DeletedCount == 0)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
         }
     }
 }
