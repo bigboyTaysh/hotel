@@ -10,11 +10,11 @@ namespace Identity.Service.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : Controller
+    public class UsersController : Controller
     {
         private readonly UserService service;
 
-        public UserController(UserService _service)
+        public UsersController(UserService _service)
         {
             service = _service;
         }
