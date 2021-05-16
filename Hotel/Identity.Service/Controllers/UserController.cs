@@ -1,4 +1,4 @@
-﻿using IdentityAPI.Models;
+﻿using Identity.Service.Models;
 using Identity.Service.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;

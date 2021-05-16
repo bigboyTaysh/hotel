@@ -15,7 +15,6 @@ namespace Identity.Service.Services
 
         public CustomerService(IDatabaseSettings settings)
         {
-
             var client = new MongoClient(settings.ConnectionString);
             var database = client.GetDatabase(settings.DatabaseName);
 

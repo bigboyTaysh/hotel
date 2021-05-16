@@ -1,4 +1,4 @@
-﻿using IdentityAPI.Models;
+﻿
 using Identity.Service.Extensions;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
@@ -7,22 +7,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using Identity.Service.DAL;
+using Identity.Service.Models;
+
 namespace Identity.Service.Services
 {
     public class UserService
     {
-        private readonly IMongoCollection<User> users;
+        private readonly IMongoCollection<User> _users;
 
-        public UserService(IConfiguration configuration)
+        public UserService(IDatabaseSettings settings)
         {
-            var client = new MongoClient(configuration.GetConnectionString("IdentityDb"));
-            var database = client.GetDatabase("IdentityDb");
-            users = database.GetCollection<User>("Users");
+            var client = new MongoClient(settings.ConnectionString);
+            var database = client.GetDatabase(settings.DatabaseName);
+
+            _users = database.GetCollection<User>(settings.CollectionName);
         }
 
-        public List<User> GetUsers() => users.Find(user => true).ToList();
+        public List<User> GetUsers() => _users.Find(user => true).ToList();
 
-        public User GetUser(string id) => users.Find(user => user.Id == id).FirstOrDefault();
+        public User GetUser(string id) => _users.Find(user => user.Id == id).FirstOrDefault();
 
         public User Create(User user)
         {
@@ -32,7 +36,7 @@ namespace Identity.Service.Services
                 user.Password = hash;
             }
 
-            users.InsertOne(user);
+            _users.InsertOne(user);
             return user;
         }
     }
