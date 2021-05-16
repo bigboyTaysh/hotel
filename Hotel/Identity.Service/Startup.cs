@@ -31,8 +31,11 @@ namespace Identity.Service
         {
 
             services.AddSingleton(db => db.GetRequiredService<IOptions<DatabaseSettings>>().Value);
-            services.AddScoped<UserService>();
-
+            services.Configure<DatabaseSettings>(
+                Configuration.GetSection(nameof(DatabaseSettings)));
+            
+            services.AddSingleton<UserService>();
+            
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {

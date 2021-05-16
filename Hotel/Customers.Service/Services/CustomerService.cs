@@ -1,4 +1,5 @@
-﻿using Customers.Service.Models;
+﻿using Customers.Service.DAL;
+using Customers.Service.Models;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 using System;
@@ -12,11 +13,13 @@ namespace Identity.Service.Services
     {
         private readonly IMongoCollection<Customer> _customers;
 
-        public CustomerService(IConfiguration configuration)
+        public CustomerService(IDatabaseSettings settings)
         {
-            var client = new MongoClient(configuration.GetConnectionString("IdentityDb"));
-            var database = client.GetDatabase("IdentityDb");
-            _customers = database.GetCollection<Customer>("Customers");
+
+            var client = new MongoClient(settings.ConnectionString);
+            var database = client.GetDatabase(settings.DatabaseName);
+
+            _customers = database.GetCollection<Customer>(settings.CollectionName);
         }
 
         public List<Customer> GetCustomers() => _customers.Find(user => true).ToList();

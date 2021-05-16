@@ -8,7 +8,7 @@ namespace Customers.Service.DAL
     public interface IDatabaseSettings
     {
         public string CollectionName { get; set; }
-        public string CollectionString { get; set; }
+        public string ConnectionString { get; set; }
         public string DatabaseName { get; set; }
     }
 }
