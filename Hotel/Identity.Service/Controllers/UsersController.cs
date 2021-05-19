@@ -26,7 +26,7 @@ namespace Identity.Service.Controllers
         }
 
         [HttpGet("{id:length(24)}")]
-        public ActionResult<List<User>> GetUser(string id)
+        public ActionResult<User> GetUser(string id)
         {
             var user = service.GetUser(id);
             return Json(user);
