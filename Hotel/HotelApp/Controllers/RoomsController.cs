@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
-using Rooms.Service.DAL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +34,7 @@ namespace HotelApp.Controllers
         [HttpGet]
         public async Task<ActionResult> GetAsync()
         {
-            HttpResponseMessage response = await _client.GetAsync(_roomsServiceUrl + "api/rooms");
+            HttpResponseMessage response = await _client.GetAsync(_roomsServiceUrl);
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
@@ -49,35 +48,51 @@ namespace HotelApp.Controllers
 
         // GET api/<RoomsController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<ActionResult> Get(string id)
         {
-            return "value";
+            HttpResponseMessage response = await _client.GetAsync(_roomsServiceUrl + id);
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                return Ok(response.Content.ReadAsStringAsync().Result);
+            }
+            else
+            {
+                return StatusCode((int)response.StatusCode);
+            }
         }
 
         // POST api/<RoomsController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<ActionResult> Post(Room room)
         {
-            /*
-            ApplicationUser applicationUser = new ApplicationUser();
-
-            string json = JsonConvert.SerializeObject(applicationUser);
+            string json = JsonConvert.SerializeObject(room);
             StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
 
-            HttpResponseMessage response = await _client.PostAsync(_roomsServiceUrl + "api/rooms", httpContent);
-            */
+            HttpResponseMessage response = await _client.PostAsync(_roomsServiceUrl, httpContent);
+
+            return StatusCode((int)response.StatusCode);
         }
 
         // PUT api/<RoomsController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<ActionResult> Put(string id, Room room)
         {
+            string json = JsonConvert.SerializeObject(room);
+            StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+
+            HttpResponseMessage response = await _client.PutAsync(_roomsServiceUrl + id, httpContent);
+
+            return StatusCode((int)response.StatusCode);
         }
 
         // DELETE api/<RoomsController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<ActionResult> Delete(string id)
         {
+            HttpResponseMessage response = await _client.DeleteAsync(_roomsServiceUrl + id);
+
+            return StatusCode((int)response.StatusCode);
         }
     }
 }
