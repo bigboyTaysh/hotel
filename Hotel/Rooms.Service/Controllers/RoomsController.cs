@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Rooms.Service.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class RoomsController : ControllerBase
     {
         private readonly RoomService service;
