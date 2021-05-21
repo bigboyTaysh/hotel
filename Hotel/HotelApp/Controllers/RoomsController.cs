@@ -71,7 +71,14 @@ namespace HotelApp.Controllers
 
             HttpResponseMessage response = await _client.PostAsync(_roomsServiceUrl, httpContent);
 
-            return StatusCode((int)response.StatusCode);
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                return Ok(response.Content.ReadAsStringAsync().Result);
+            }
+            else
+            {
+                return StatusCode((int)response.StatusCode);
+            }
         }
 
         // PUT api/<RoomsController>/5
@@ -83,7 +90,14 @@ namespace HotelApp.Controllers
 
             HttpResponseMessage response = await _client.PutAsync(_roomsServiceUrl + id, httpContent);
 
-            return StatusCode((int)response.StatusCode);
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                return Ok(response.Content.ReadAsStringAsync().Result);
+            }
+            else
+            {
+                return StatusCode((int)response.StatusCode);
+            }
         }
 
         // DELETE api/<RoomsController>/5
