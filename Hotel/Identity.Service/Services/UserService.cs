@@ -1,12 +1,9 @@
 ﻿
 using Identity.Service.Extensions;
-using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
-using System.Threading.Tasks;
 using Identity.Service.DAL;
 using Identity.Service.Models;
 
