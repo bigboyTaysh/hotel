@@ -81,7 +81,6 @@ namespace Identity.Service
 
             app.UseRouting();
 
-            
             app.UseAuthentication();
             app.UseAuthorization();
 
