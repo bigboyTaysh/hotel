@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { User, UserManager, WebStorageStateStore } from 'oidc-client';
+//import { User, UserManager, WebStorageStateStore } from 'oidc-client';
 import { BehaviorSubject, concat, from, Observable } from 'rxjs';
 import { filter, map, mergeMap, take, tap } from 'rxjs/operators';
 import { ApplicationPaths, ApplicationName } from './api-authorization.constants';
@@ -29,8 +29,68 @@ export enum AuthenticationResultStatus {
   Fail
 }
 
-export interface IUser {
-  name?: string;
+export interface UserSettings {
+  name: string,
+  token: string;
+  session_state: string;
+  access_token: string;
+  refresh_token: string;
+  token_type: string;
+  scope: string;
+  role: string;
+  expires_at: number;
+  state: any;
+}
+
+export class User {
+  constructor(settings: UserSettings) {
+    this.name = settings.name;
+
+    this.token = settings.token;
+    /** The session state value returned from the OIDC provider (opaque) */
+    this.session_state = settings.session_state;
+    /** The access token returned from the OIDC provider. */
+    this.access_token = settings.access_token;
+    /** Refresh token returned from the OIDC provider (if requested) */
+    this.refresh_token = settings.refresh_token;
+    /** The token_type returned from the OIDC provider */
+    this.token_type = settings.token_type;
+    /** The scope returned from the OIDC provider */
+    this.scope = settings.scope;
+    /** The claims represented by a combination of the id_token and the user info endpoint */
+    this.role = settings.role;
+    /** The expires at returned from the OIDC provider */
+    this.expires_at = settings.expires_at;
+    /** The custom state transferred in the last signin */
+    this.state = settings.state;
+  };
+
+  name: string;
+  /** The id_token returned from the OIDC provider */
+  token: string;
+  /** The session state value returned from the OIDC provider (opaque) */
+  session_state?: string;
+  /** The access token returned from the OIDC provider. */
+  access_token: string;
+  /** Refresh token returned from the OIDC provider (if requested) */
+  refresh_token?: string;
+  /** The token_type returned from the OIDC provider */
+  token_type: string;
+  /** The scope returned from the OIDC provider */
+  scope: string;
+  /** The claims represented by a combination of the id_token and the user info endpoint */
+  role: string;
+  /** The expires at returned from the OIDC provider */
+  expires_at: number;
+  /** The custom state transferred in the last signin */
+  state: any;
+
+  /** Calculated number of seconds the access token has remaining */
+  readonly expires_in: number;
+  /** Calculated value indicating if the access token is expired */
+  readonly expired: boolean;
+  /** Array representing the parsed values from the scope */
+  readonly scopes: string[];
 }
 
 @Injectable({
@@ -40,6 +100,89 @@ export class AuthorizeService {
   // By default pop ups are disabled because they don't work properly on Edge.
   // If you want to enable pop up authentication simply set this flag to false.
 
+  private userSubject: BehaviorSubject<User | null> = new BehaviorSubject(null);
+
+  public async signIn(credentials: any, state: any): Promise<IAuthenticationResult> {
+    let user: User = null;
+
+    const response = await fetch(ApplicationPaths.Login, {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      method: 'POST',
+      body: JSON.stringify(credentials)
+    });
+
+    if (!response.ok) {
+      return this.error('There was an error signing in.');
+    }
+
+    const json = await response.json();
+
+    const settings: any = {
+      name: json.Email,
+      access_token: json.token,
+      token_type: 'Bearer',
+    };
+
+    user = new User(settings);
+    this.userSubject.next(user);
+    this.setUserToStorage(user);
+
+    return this.success(state);
+  }
+
+  public isAuthenticated(): Observable<boolean> {
+    return this.getUser().pipe(map(u => !!u));
+  }
+
+  private error(message: string): IAuthenticationResult {
+    return { status: AuthenticationResultStatus.Fail, message };
+  }
+
+  private success(state: any): IAuthenticationResult {
+    return { status: AuthenticationResultStatus.Success, state };
+  }
+
+  private setUserToStorage(user: User) {
+    localStorage.setItem("name", user.name);
+    localStorage.setItem("access_token", user.access_token);
+    localStorage.setItem("token_type", user.token_type);
+  }
+
+  public getUser(): Observable<User | null> {
+    return concat(
+      //this.userSubject.pipe(filter(u => !!u)),
+      this.userSubject.pipe(),
+      //this.getUserFromStorage().pipe(filter(u => !!u), tap(u => this.userSubject.next(u))),
+      this.userSubject.asObservable());
+  }
+
+  public getAccessToken(): Observable<string> {
+    return this.userSubject
+      .pipe(mergeMap(() => from(this.getUser())),
+        map(user => user && user.access_token));
+  }
+
+  private getUserFromStorage(): Observable<User> {
+    return this.userSubject
+      .pipe(
+        mergeMap(() => this.getUser()),
+        map(u => u));
+  }
+
+  public async signOut(state: any): Promise<IAuthenticationResult> {
+    this.userSubject.next(null);
+    return this.success(state);
+  }
+
+  public async completeSignOut(url: string): Promise<IAuthenticationResult> {
+    this.userSubject.next(null);
+    return this.success(url);
+  }
+
+  /*
   private popUpDisabled = true;
   private userManager: UserManager;
   private userSubject: BehaviorSubject<IUser | null> = new BehaviorSubject(null);
@@ -179,7 +322,20 @@ export class AuthorizeService {
       throw new Error(`Could not load settings for '${ApplicationName}'`);
     }
 
-    const settings: any = await response.json();
+
+    const settings: any = {
+      authority: 'https://localhost:44393/',
+      client_id: 'spa',
+      redirect_uri: 'https://localhost:44331/',
+      post_logout_redirect_uri: 'https://localhost:44331/',
+      response_mode: 'query',
+      response_type:"Baerer token",
+      scope: 'email role',
+      filterProtocolClaims: true,
+      loadUserInfo: true,
+      
+    };
+
     settings.automaticSilentRenew = true;
     settings.includeIdTokenInSilentRenew = true;
     this.userManager = new UserManager(settings);
@@ -196,4 +352,5 @@ export class AuthorizeService {
         mergeMap(() => this.userManager.getUser()),
         map(u => u && u.profile));
   }
+  */
 }

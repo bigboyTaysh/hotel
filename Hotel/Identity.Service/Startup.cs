@@ -60,6 +60,7 @@ namespace Identity.Service
                 };
             });
 
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -76,6 +77,7 @@ namespace Identity.Service
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Identity.Service v1"));
             }
+
 
             app.UseHttpsRedirection();
 

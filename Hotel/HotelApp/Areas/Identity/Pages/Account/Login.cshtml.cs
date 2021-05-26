@@ -24,22 +24,17 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 namespace HotelApp.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
-    public class LoginModel : PageModel
+    public class LoginModel : Controller
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
         private readonly HttpClient _client;
         private readonly string _identityServiceUrl;
 
 
-        public LoginModel(SignInManager<ApplicationUser> signInManager, 
+        public LoginModel(
             ILogger<LoginModel> logger,
-            UserManager<ApplicationUser> userManager,
             IConfiguration config)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
             _logger = logger;
             _identityServiceUrl = config.GetSection("Identity.Service").GetSection("IdentityConnection").Value;
             _client = new HttpClient();
@@ -47,8 +42,6 @@ namespace HotelApp.Areas.Identity.Pages.Account
 
         [BindProperty]
         public InputModel Input { get; set; }
-
-        public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
         public string ReturnUrl { get; set; }
 
@@ -69,7 +62,7 @@ namespace HotelApp.Areas.Identity.Pages.Account
             public bool RememberMe { get; set; }
         }
 
-        public async Task OnGetAsync(string returnUrl = null)
+        public ActionResult OnGetAsync(string returnUrl = null)
         {
             if (!string.IsNullOrEmpty(ErrorMessage))
             {
@@ -79,18 +72,20 @@ namespace HotelApp.Areas.Identity.Pages.Account
             returnUrl ??= Url.Content("~/");
 
             // Clear the existing external cookie to ensure a clean login process
-            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+            //await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            //ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             ReturnUrl = returnUrl;
+
+            return View();
         }
 
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        public async Task<ActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
 
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            //ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             if (ModelState.IsValid)
             {
@@ -119,7 +114,6 @@ namespace HotelApp.Areas.Identity.Pages.Account
                     */
 
                     /*
-
                     var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
                     identity.AddClaim(new Claim(ClaimTypes.Name, loggedUser.Email));
                     identity.AddClaim(new Claim(ClaimTypes.Email, loggedUser.Email));
@@ -132,24 +126,7 @@ namespace HotelApp.Areas.Identity.Pages.Account
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
                     */
 
-                    var claims = new List<Claim>
-                        {
-                            new Claim(ClaimTypes.Name, loggedUser.Email),
-                            new Claim(ClaimTypes.Email, loggedUser.Email),
-                            new Claim(ClaimTypes.Role, loggedUser.Role),
-                            new Claim(ClaimTypes.Authentication, loggedUser.Token),
-                        };
 
-                    var claimsIdentity = new ClaimsIdentity(
-                        claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-                    await HttpContext.SignInAsync(
-                        CookieAuthenticationDefaults.AuthenticationScheme,
-                        new ClaimsPrincipal(claimsIdentity),
-                        new AuthenticationProperties
-                        {
-                            IsPersistent = true,
-                        });
 
                     /*
                     var claimsIdentity = new ClaimsIdentity(
@@ -166,17 +143,17 @@ namespace HotelApp.Areas.Identity.Pages.Account
                     */
 
                     _logger.LogInformation("User logged in.");
-                    return LocalRedirect(returnUrl);
+                    return Redirect(returnUrl);
                 }
                 else
                 {
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    return Page();
+                    return View();
                 }
             }
 
             // If we got this far, something failed, redisplay form
-            return Page();
+            return View();
         }
     }
 }

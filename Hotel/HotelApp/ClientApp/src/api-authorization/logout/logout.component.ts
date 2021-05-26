@@ -51,6 +51,7 @@ export class LogoutComponent implements OnInit {
     ).toPromise();
     if (isauthenticated) {
       const result = await this.authorizeService.signOut(state);
+      console.log(result)
       switch (result.status) {
         case AuthenticationResultStatus.Redirect:
           break;

@@ -22,7 +22,7 @@ using System.Threading;
 
 namespace HotelApp.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("authentication/[controller]")]
     [ApiController]
     public class LoginController : ControllerBase
     {
@@ -37,20 +37,14 @@ namespace HotelApp.Controllers
 
         public class InputModel
         {
-            [Required]
-            [EmailAddress]
             public string Email { get; set; }
 
-            [Required]
-            [DataType(DataType.Password)]
             public string Password { get; set; }
         }
 
-        [HttpGet]
-        public async Task<IActionResult> OnPostAsync(InputModel inputModel, string returnUrl = null)
+        [HttpPost]
+        public async Task<IActionResult> OnPostAsync(InputModel inputModel)
         {
-            returnUrl ??= Url.Content("~/");
-
 
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, set lockoutOnFailure: true

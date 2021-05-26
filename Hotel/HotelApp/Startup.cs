@@ -2,6 +2,7 @@ using HotelApp.Data;
 using HotelApp.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -12,7 +13,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Text;
 
 namespace HotelApp
 {
@@ -47,16 +50,7 @@ namespace HotelApp
                 .AddCookie();
             */
 
-            services.AddDistributedMemoryCache();
-
-            services.AddSession(options =>
-            {
-                // Set a short timeout for easy testing.
-                options.IdleTimeout = TimeSpan.FromSeconds(10);
-                options.Cookie.HttpOnly = true;
-                // Make the session cookie essential
-                options.Cookie.IsEssential = true;
-            });
+            services.AddCors();
 
             services.AddControllersWithViews();
             services.AddRazorPages();
@@ -83,6 +77,7 @@ namespace HotelApp
                 app.UseHsts();
             }
 
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             if (!env.IsDevelopment())
@@ -90,16 +85,8 @@ namespace HotelApp
                 app.UseSpaStaticFiles();
             }
 
-            app.UseSession();
-
             app.UseRouting();
-            
 
-            //app.UseAuthentication();
-
-            //app.UseIdentityServer();
-
-            //app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

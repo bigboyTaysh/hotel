@@ -3,6 +3,7 @@ import { AuthorizeService, AuthenticationResultStatus } from '../authorize.servi
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { LoginActions, QueryParameterNames, ApplicationPaths, ReturnUrlType } from '../api-authorization.constants';
+import { FormGroup, NgForm } from '@angular/forms';
 
 // The main responsibility of this component is to handle the user's login process.
 // This is the starting point for the login process. Any component that needs to authenticate
@@ -15,6 +16,7 @@ import { LoginActions, QueryParameterNames, ApplicationPaths, ReturnUrlType } fr
 })
 export class LoginComponent implements OnInit {
   public message = new BehaviorSubject<string>(null);
+  loginForm: NgForm;
 
   constructor(
     private authorizeService: AuthorizeService,
@@ -22,14 +24,29 @@ export class LoginComponent implements OnInit {
     private router: Router) { }
 
   async ngOnInit() {
+
+  }
+
+  async onSubmit(form: NgForm) {
+    console.log(form.value);
+
+    const credentials = {
+      'email': form.value.email,
+      'password': form.value.password,
+    }
+
+    console.log(credentials);
+    await this.login(credentials, this.getReturnUrl());
+
+    /*
     const action = this.activatedRoute.snapshot.url[1];
     switch (action.path) {
       case LoginActions.Login:
         await this.login(this.getReturnUrl());
         break;
-      case LoginActions.LoginCallback:
-        await this.processLoginCallback();
-        break;
+      //case LoginActions.LoginCallback:
+      //  await this.processLoginCallback();
+      //  break;
       case LoginActions.LoginFailed:
         const message = this.activatedRoute.snapshot.queryParamMap.get(QueryParameterNames.Message);
         this.message.next(message);
@@ -43,12 +60,13 @@ export class LoginComponent implements OnInit {
       default:
         throw new Error(`Invalid action '${action}'`);
     }
+    */
   }
 
 
-  private async login(returnUrl: string): Promise<void> {
+  private async login(credentials: any, returnUrl: string): Promise<void> {
     const state: INavigationState = { returnUrl };
-    const result = await this.authorizeService.signIn(state);
+    const result = await this.authorizeService.signIn(credentials, state);
     this.message.next(undefined);
     switch (result.status) {
       case AuthenticationResultStatus.Redirect:
@@ -66,6 +84,7 @@ export class LoginComponent implements OnInit {
     }
   }
 
+  /*
   private async processLoginCallback(): Promise<void> {
     const url = window.location.href;
     const result = await this.authorizeService.completeSignIn(url);
@@ -81,6 +100,7 @@ export class LoginComponent implements OnInit {
         break;
     }
   }
+*/
 
   private redirectToRegister(): any {
     this.redirectToApiAuthorizationPath(
