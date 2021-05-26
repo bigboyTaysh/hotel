@@ -121,7 +121,7 @@ export class AuthorizeService {
     const json = await response.json();
 
     const settings: any = {
-      name: json.Email,
+      name: json.email,
       access_token: json.token,
       token_type: 'Bearer',
     };
@@ -165,19 +165,43 @@ export class AuthorizeService {
         map(user => user && user.access_token));
   }
 
-  private getUserFromStorage(): Observable<User> {
-    return this.userSubject
-      .pipe(
-        mergeMap(() => this.getUser()),
-        map(u => u));
+  public getUserFromStorage() {
+    const settings: any = {
+      name: localStorage.getItem('name'),
+      access_token: localStorage.getItem('access_token'),
+      token_type: localStorage.getItem('token_type'),
+    };
+
+    console.log(settings);
+
+    if (this.isNotEmpty(settings)) {
+      this.userSubject.next(new User(settings));
+    }
   }
 
+  private isNotEmpty(obj): boolean {
+    for (var key in obj) {
+      if (obj[key] === null || obj[key] === "" || obj[key] === undefined)
+        return false;
+    }
+    return true;
+  }
+
+
   public async signOut(state: any): Promise<IAuthenticationResult> {
+    localStorage.removeItem('name');
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('token_type');
+
     this.userSubject.next(null);
     return this.success(state);
   }
 
   public async completeSignOut(url: string): Promise<IAuthenticationResult> {
+    localStorage.removeItem('name');
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('token_type');
+
     this.userSubject.next(null);
     return this.success(url);
   }
