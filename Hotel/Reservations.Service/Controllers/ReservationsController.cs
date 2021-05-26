@@ -6,11 +6,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Reservations.Service.Controllers
+namespace Reservations.Service.Controllers 
 {
+
     [ApiController]
-    [Route("[controller]")]
-   public class ReservationsController : ControllerBase
+    [Route("api/[controller]")]
+
+public class ReservationsController : ControllerBase
     {
         private readonly ReservationService service;
 
