@@ -28,14 +28,11 @@ export class LoginComponent implements OnInit {
   }
 
   async onSubmit(form: NgForm) {
-    console.log(form.value);
-
     const credentials = {
       'email': form.value.email,
       'password': form.value.password,
     }
 
-    console.log(credentials);
     await this.login(credentials, this.getReturnUrl());
 
     /*

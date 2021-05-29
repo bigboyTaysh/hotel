@@ -11,21 +11,24 @@ import { map, take, tap } from 'rxjs/operators';
 export class LoginMenuComponent implements OnInit {
   public isAuthenticated: Observable<boolean>;
   public userName: Observable<string>;
+  public role: string;
+
 
   constructor(private authorizeService: AuthorizeService) { }
 
   ngOnInit() {
-    if(!this.isUserAuthenticated()){
+    this.isAuthenticated = this.authorizeService.isAuthenticated([]);
+
+    if (!this.isAuthenticated) {
       this.authorizeService.getUserFromStorage();
+      this.isAuthenticated = this.authorizeService.isAuthenticated([]);
     }
-    
-    this.isAuthenticated = this.authorizeService.isAuthenticated();
+
     this.userName = this.authorizeService.getUser().pipe(map(u => u && u.name));
+    this.authorizeService.getUser().pipe(map(u => u && u.role)).subscribe(value => this.role = value);
   }
 
-  isUserAuthenticated(){
-    let bool;
-    this.authorizeService.isAuthenticated().subscribe(value => bool = value);
-    return bool;
+  isInRole(role: string){
+    return this.role === role ? true : false;
   }
 }

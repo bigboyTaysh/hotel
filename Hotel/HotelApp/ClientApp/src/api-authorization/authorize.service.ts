@@ -122,10 +122,11 @@ export class AuthorizeService {
 
     const settings: any = {
       name: json.email,
+      role: json.role,
       access_token: json.token,
       token_type: 'Bearer',
     };
-
+    
     user = new User(settings);
     this.userSubject.next(user);
     this.setUserToStorage(user);
@@ -133,8 +134,20 @@ export class AuthorizeService {
     return this.success(state);
   }
 
-  public isAuthenticated(): Observable<boolean> {
-    return this.getUser().pipe(map(u => !!u));
+  public isAuthenticated(allowedRoles: string[]): Observable<boolean> {
+    return this.getUser().pipe(map(u => this.isInRole(u, allowedRoles)));
+  }
+
+  private isInRole(user: User, allowedRoles: string[]){
+    if (user == null){
+      return false;
+    }
+    
+    if (allowedRoles == null || allowedRoles.length === 0) {
+      return true;
+    }
+
+    return allowedRoles.includes(user.role);
   }
 
   private error(message: string): IAuthenticationResult {
@@ -147,6 +160,7 @@ export class AuthorizeService {
 
   private setUserToStorage(user: User) {
     localStorage.setItem("name", user.name);
+    localStorage.setItem("role", user.role);
     localStorage.setItem("access_token", user.access_token);
     localStorage.setItem("token_type", user.token_type);
   }
@@ -168,11 +182,10 @@ export class AuthorizeService {
   public getUserFromStorage() {
     const settings: any = {
       name: localStorage.getItem('name'),
+      role: localStorage.getItem('role'),
       access_token: localStorage.getItem('access_token'),
       token_type: localStorage.getItem('token_type'),
     };
-
-    console.log(settings);
 
     if (this.isNotEmpty(settings)) {
       this.userSubject.next(new User(settings));
@@ -190,6 +203,7 @@ export class AuthorizeService {
 
   public async signOut(state: any): Promise<IAuthenticationResult> {
     localStorage.removeItem('name');
+    localStorage.removeItem('role');
     localStorage.removeItem('access_token');
     localStorage.removeItem('token_type');
 
@@ -199,6 +213,7 @@ export class AuthorizeService {
 
   public async completeSignOut(url: string): Promise<IAuthenticationResult> {
     localStorage.removeItem('name');
+    localStorage.removeItem('role');
     localStorage.removeItem('access_token');
     localStorage.removeItem('token_type');
 
