@@ -17,15 +17,19 @@ export class LoginMenuComponent implements OnInit {
   constructor(private authorizeService: AuthorizeService) { }
 
   ngOnInit() {
-    this.isAuthenticated = this.authorizeService.isAuthenticated([]);
-
-    if (!this.isAuthenticated) {
+    if (!this.isUserAuthenticated()) {
       this.authorizeService.getUserFromStorage();
-      this.isAuthenticated = this.authorizeService.isAuthenticated([]);
     }
 
+    this.isAuthenticated = this.authorizeService.isAuthenticated([]);
     this.userName = this.authorizeService.getUser().pipe(map(u => u && u.name));
     this.authorizeService.getUser().pipe(map(u => u && u.role)).subscribe(value => this.role = value);
+  }
+
+  isUserAuthenticated() {
+    let bool;
+    this.authorizeService.isAuthenticated([]).subscribe(value => bool = value);
+    return bool;
   }
 
   isInRole(role: string){
