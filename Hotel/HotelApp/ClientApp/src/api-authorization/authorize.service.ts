@@ -211,16 +211,6 @@ export class AuthorizeService {
     return this.success(state);
   }
 
-  public async completeSignOut(url: string): Promise<IAuthenticationResult> {
-    localStorage.removeItem('name');
-    localStorage.removeItem('role');
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('token_type');
-
-    this.userSubject.next(null);
-    return this.success(url);
-  }
-
   /*
   private popUpDisabled = true;
   private userManager: UserManager;
