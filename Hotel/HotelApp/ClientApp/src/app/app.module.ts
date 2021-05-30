@@ -29,7 +29,7 @@ import { UsersComponent } from './users/users.component';
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'counter', component: CounterComponent },
-      { path: 'users', component: UsersComponent, canActivate: [AuthorizeGuard], data: { roles: ['admin'] } },
+      { path: 'users', component: UsersComponent, canActivate: [AuthorizeGuard], data: { roles: ['Admin'] } },
     ])
   ],
   providers: [

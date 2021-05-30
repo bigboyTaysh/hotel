@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Identity.Service.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : Controller

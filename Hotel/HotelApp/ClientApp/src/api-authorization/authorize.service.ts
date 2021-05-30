@@ -105,9 +105,7 @@ export class AuthorizeService {
 
   public async signIn(credentials: any, state: any): Promise<IAuthenticationResult> {
     let user: User = null;
-
-    console.log(credentials);
-
+    
     const response = await fetch(ApplicationPaths.Login, {
       headers: {
         'Accept': 'application/json',

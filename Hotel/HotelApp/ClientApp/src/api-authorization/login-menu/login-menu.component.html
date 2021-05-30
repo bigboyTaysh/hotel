@@ -1,5 +1,5 @@
 <ul class="navbar-nav" *ngIf="isAuthenticated | async">
-    <li *ngIf="isInRole('admin')" class="nav-item" [routerLinkActive]="['link-active']">
+    <li *ngIf="isInRole('Admin')" class="nav-item" [routerLinkActive]="['link-active']">
         <a class="nav-link text-dark" [routerLink]="['/users']">Users</a>
     </li>
     <li class="nav-item">
