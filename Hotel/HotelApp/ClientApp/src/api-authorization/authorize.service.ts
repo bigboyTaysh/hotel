@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, concat, from, Observable } from 'rxjs';
 import { filter, map, mergeMap, take, tap } from 'rxjs/operators';
 import { ApplicationPaths, ApplicationName } from './api-authorization.constants';
+import jwt_decode from 'jwt-decode';
 
 export type IAuthenticationResult =
   SuccessAuthenticationResult |
@@ -105,6 +106,8 @@ export class AuthorizeService {
   public async signIn(credentials: any, state: any): Promise<IAuthenticationResult> {
     let user: User = null;
 
+    console.log(credentials);
+
     const response = await fetch(ApplicationPaths.Login, {
       headers: {
         'Accept': 'application/json',
@@ -118,12 +121,13 @@ export class AuthorizeService {
       return this.error('There was an error signing in.');
     }
 
-    const json = await response.json();
+    const token = await response.json();
+    const tokenInfo = this.getDecodedAccessToken(token);
 
     const settings: any = {
-      name: json.email,
-      role: json.role,
-      access_token: json.token,
+      name: tokenInfo.unique_name,
+      role: tokenInfo.role,
+      access_token: token,
       token_type: 'Bearer',
     };
     
@@ -200,6 +204,14 @@ export class AuthorizeService {
     return true;
   }
 
+  getDecodedAccessToken(token: string): any {
+    try{
+        return jwt_decode(token);
+    }
+    catch(Error){
+        return null;
+    }
+  }
 
   public async signOut(state: any): Promise<IAuthenticationResult> {
     localStorage.removeItem('name');

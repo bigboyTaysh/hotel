@@ -29,7 +29,7 @@ export class LoginComponent implements OnInit {
 
   async onSubmit(form: NgForm) {
     const credentials = {
-      'email': form.value.email,
+      'login': form.value.login,
       'password': form.value.password,
     }
 

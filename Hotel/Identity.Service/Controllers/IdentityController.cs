@@ -19,12 +19,12 @@ namespace Identity.Service.Controllers
         [HttpPost]
         public ActionResult Login(LoginUser loginUser)
         {
-            var user = service.Authenticate(loginUser);
+            var token = service.Authenticate(loginUser);
 
-            if (user == null)
+            if (token == null)
                 return Unauthorized();
 
-            return Ok(user);
+            return Ok(token);
         }
     }
 }

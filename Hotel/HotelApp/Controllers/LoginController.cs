@@ -37,7 +37,7 @@ namespace HotelApp.Controllers
 
         public class InputModel
         {
-            public string Email { get; set; }
+            public string Login { get; set; }
 
             public string Password { get; set; }
         }
@@ -50,7 +50,7 @@ namespace HotelApp.Controllers
             // To enable password failures to trigger account lockout, set lockoutOnFailure: true
             //var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
 
-            string json = JsonConvert.SerializeObject(new { Email = inputModel.Email, Password = inputModel.Password });
+            string json = JsonConvert.SerializeObject(new { Login = inputModel.Login, Password = inputModel.Password });
             StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
 
             HttpResponseMessage response = await _client.PostAsync(_identityServiceUrl, httpContent);
@@ -59,7 +59,7 @@ namespace HotelApp.Controllers
             {
 
 
-                LoggedUser loggedUser = JsonConvert.DeserializeObject<LoggedUser>(response.Content.ReadAsStringAsync().Result);
+                //LoggedUser loggedUser = JsonConvert.DeserializeObject<LoggedUser>(response.Content.ReadAsStringAsync().Result);
 
                 
                 /*
@@ -141,7 +141,7 @@ namespace HotelApp.Controllers
 
                 */
 
-                return Ok(loggedUser);
+                return Ok(response.Content.ReadAsStringAsync().Result);
             }
             else
             {

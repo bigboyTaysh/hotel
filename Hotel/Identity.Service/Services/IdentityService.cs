@@ -30,14 +30,14 @@ namespace Identity.Service.Services
             _key = config.GetSection("SecretKey").Value;
         }
 
-        public LoggedUser Authenticate(LoginUser loginUser)
+        public string Authenticate(LoginUser loginUser)
         {
             using (SHA256 sha256Hash = SHA256.Create())
             {
                 loginUser.Password = Hash.GetHash(sha256Hash, loginUser.Password);
             }
 
-            var user = _users.Find(u => u.Email == loginUser.Email && u.Password == loginUser.Password).FirstOrDefault();
+            var user = _users.Find(u => u.Login == loginUser.Login && u.Password == loginUser.Password).FirstOrDefault();
 
             if (user == null)
                 return null;
@@ -48,7 +48,7 @@ namespace Identity.Service.Services
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim(ClaimTypes.Name, user.Login),
                     new Claim(ClaimTypes.Role, user.Role)
                 }),
 
@@ -62,7 +62,7 @@ namespace Identity.Service.Services
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
-            return new LoggedUser() { Token = tokenHandler.WriteToken(token), Email = user.Email, Role = user.Role };
+            return tokenHandler.WriteToken(token);
         }
     }
 }
