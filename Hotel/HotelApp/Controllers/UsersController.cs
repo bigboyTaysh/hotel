@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using HotelApp.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Primitives;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,8 +64,26 @@ namespace HotelApp.Controllers
 
         // POST api/<UsersController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<ActionResult> Post(InputUser inputModel)
         {
+            Request.Headers.TryGetValue("Authorization", out var token);
+
+            if (StringValues.IsNullOrEmpty(token))
+                return Unauthorized("Empty token");
+
+            _client.DefaultRequestHeaders.Add("Authorization", token.FirstOrDefault());
+
+            StringContent httpContent = new StringContent(JsonConvert.SerializeObject(inputModel), System.Text.Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await _client.PostAsync(_usersServiceUrl, httpContent);
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                return Ok(response.Content.ReadAsStringAsync().Result);
+            }
+            else
+            {
+                return StatusCode((int)response.StatusCode);
+            }
         }
 
         // PUT api/<UsersController>/5

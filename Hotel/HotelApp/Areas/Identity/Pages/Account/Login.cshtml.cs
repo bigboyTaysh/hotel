@@ -102,7 +102,7 @@ namespace HotelApp.Areas.Identity.Pages.Account
                 {
 
 
-                    LoggedUser loggedUser = JsonConvert.DeserializeObject<LoggedUser>(response.Content.ReadAsStringAsync().Result);
+                    InputUser loggedUser = JsonConvert.DeserializeObject<InputUser>(response.Content.ReadAsStringAsync().Result);
 
 
                     /*
