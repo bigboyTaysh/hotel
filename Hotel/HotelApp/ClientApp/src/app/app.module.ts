@@ -12,7 +12,8 @@ import { ApiAuthorizationModule } from 'src/api-authorization/api-authorization.
 import { AuthorizeGuard } from 'src/api-authorization/authorize.guard';
 import { AuthorizeInterceptor } from 'src/api-authorization/authorize.interceptor';
 import { UsersComponent } from './users/users.component';
-import { EditUserComponent } from './users/edit/edit-user.component';
+import { EditUserComponent } from './users/edit-user/edit-user.component';
+import { AddUserComponent } from './users/add-user/add-user.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { EditUserComponent } from './users/edit/edit-user.component';
     HomeComponent,
     CounterComponent,
     UsersComponent,
-    EditUserComponent
+    EditUserComponent,
+    AddUserComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -32,7 +34,7 @@ import { EditUserComponent } from './users/edit/edit-user.component';
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'counter', component: CounterComponent },
       { path: 'users', component: UsersComponent, canActivate: [AuthorizeGuard], data: { roles: ['Admin'] } },
-      { path: 'users/add/:id', component: EditUserComponent, canActivate: [AuthorizeGuard], data: { roles: ['Admin'] } },
+      { path: 'users/add', component: AddUserComponent, canActivate: [AuthorizeGuard], data: { roles: ['Admin'] } },
       { path: 'users/edit/:id', component: EditUserComponent, canActivate: [AuthorizeGuard], data: { roles: ['Admin'] } },
     ])
   ],

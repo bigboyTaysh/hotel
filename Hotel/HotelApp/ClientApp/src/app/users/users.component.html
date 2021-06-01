@@ -1,5 +1,6 @@
 <p *ngIf="!users"><em>Loading...</em></p>
 
+<a [routerLink]="['add']" class="btn btn-primary">Add user</a>
 <table class='table table-striped' aria-labelledby="tableLabel" *ngIf="users">
   <thead>
     <tr>
@@ -11,7 +12,7 @@
   <tbody>
     <tr *ngFor="let user of users">
       <td>{{ user.id }}</td>
-      <td>{{ user.email }}</td>
+      <td>{{ user.login }}</td>
       <td>{{ user.role }}</td>
       <td><a [routerLink]="['edit', user.id]">Edit</a></td>
     </tr>

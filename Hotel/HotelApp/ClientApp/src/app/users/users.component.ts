@@ -18,6 +18,6 @@ export class UsersComponent{
 
 interface User {
   id: string;
-  email: string;
+  login: string;
   role: string;
 }
