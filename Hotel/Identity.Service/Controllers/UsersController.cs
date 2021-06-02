@@ -38,5 +38,17 @@ namespace Identity.Service.Controllers
             return Json(user);
         }
 
+        [HttpPut]
+        public ActionResult Put(User user)
+        {
+            var result = service.Update(user);
+
+            if (result.MatchedCount == 0)
+            {
+                return NotFound();
+            }
+
+            return Ok(user);
+        }
     }
 }

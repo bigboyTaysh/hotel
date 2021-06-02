@@ -29,12 +29,28 @@ namespace Identity.Service.Services
         {
             using (SHA256 sha256Hash = SHA256.Create())
             {
-                string hash = Hash.GetHash(sha256Hash, user.Password);
-                user.Password = hash;
+                user.Password = Hash.GetHash(sha256Hash, user.Password);
             }
 
             _users.InsertOne(user);
             return user;
+        }
+
+        public ReplaceOneResult Update(User userIn)
+        {
+            if (string.IsNullOrEmpty(userIn.Password))
+            {
+                userIn.Password = _users.Find(user => user.Id == userIn.Id).FirstOrDefault().Password;
+            } 
+            else
+            {
+                using (SHA256 sha256Hash = SHA256.Create())
+                {
+                    userIn.Password = Hash.GetHash(sha256Hash, userIn.Password);
+                }
+            }
+
+            return _users.ReplaceOne(user => user.Id == userIn.Id, userIn);
         }
     }
 }

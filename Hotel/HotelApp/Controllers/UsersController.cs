@@ -55,11 +55,26 @@ namespace HotelApp.Controllers
             }
         }
 
-        // GET api/<UsersController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<ActionResult> Get(string id)
         {
-            return "value";
+            Request.Headers.TryGetValue("Authorization", out var token);
+
+            if (StringValues.IsNullOrEmpty(token))
+                return Unauthorized();
+
+            _client.DefaultRequestHeaders.Add("Authorization", token.FirstOrDefault());
+
+            HttpResponseMessage response = await _client.GetAsync(_usersServiceUrl + id);
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                return Ok(response.Content.ReadAsStringAsync().Result);
+            }
+            else
+            {
+                return StatusCode((int)response.StatusCode);
+            }
         }
 
         // POST api/<UsersController>
@@ -87,9 +102,27 @@ namespace HotelApp.Controllers
         }
 
         // PUT api/<UsersController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPut]
+        public async Task<ActionResult> Put(InputUser user)
         {
+            Request.Headers.TryGetValue("Authorization", out var token);
+
+            if (StringValues.IsNullOrEmpty(token))
+                return Unauthorized("Empty token");
+
+            _client.DefaultRequestHeaders.Add("Authorization", token.FirstOrDefault());
+
+            StringContent httpContent = new StringContent(JsonConvert.SerializeObject(user), System.Text.Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await _client.PutAsync(_usersServiceUrl, httpContent);
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                return Ok(response.Content.ReadAsStringAsync().Result);
+            }
+            else
+            {
+                return StatusCode((int)response.StatusCode);
+            }
         }
 
         // DELETE api/<UsersController>/5
