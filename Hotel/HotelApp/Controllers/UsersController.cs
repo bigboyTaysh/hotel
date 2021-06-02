@@ -127,8 +127,25 @@ namespace HotelApp.Controllers
 
         // DELETE api/<UsersController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<ActionResult> Delete(string id)
         {
+            Request.Headers.TryGetValue("Authorization", out var token);
+
+            if (StringValues.IsNullOrEmpty(token))
+                return Unauthorized("Empty token");
+
+            _client.DefaultRequestHeaders.Add("Authorization", token.FirstOrDefault());
+
+            HttpResponseMessage response = await _client.DeleteAsync(_usersServiceUrl + id);
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                return Ok(response.Content.ReadAsStringAsync().Result);
+            }
+            else
+            {
+                return StatusCode((int)response.StatusCode);
+            }
         }
     }
 }

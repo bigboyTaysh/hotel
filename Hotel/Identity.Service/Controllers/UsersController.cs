@@ -50,5 +50,17 @@ namespace Identity.Service.Controllers
 
             return Ok(user);
         }
+
+
+        [HttpDelete("{id}")]
+        public ActionResult Delete(string id)
+        {
+            if (service.Remove(id).DeletedCount == 0)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
+        }
     }
 }
