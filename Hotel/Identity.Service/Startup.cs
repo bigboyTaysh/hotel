@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Steeltoe.Discovery.Client;
 
 namespace Identity.Service
 {
@@ -60,6 +61,7 @@ namespace Identity.Service
                 };
             });
 
+            services.AddDiscoveryClient(Configuration);
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -78,6 +80,7 @@ namespace Identity.Service
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Identity.Service v1"));
             }
 
+            app.UseDiscoveryClient();
 
             app.UseHttpsRedirection();
 
