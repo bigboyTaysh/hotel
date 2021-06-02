@@ -1,1 +1,30 @@
-<p>{{ message | async }}</p>
+<div class="row">
+    <div class="col-md-4">
+        <form #loginForm="ngForm">
+            <h4>Use a local account to log in.</h4>
+            <hr />
+            <div class="form-group">
+                <label for="login">Email</label>
+                <input type="login" name="login" ngModel class="form-control" required />
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" name="password" ngModel class="form-control" />
+            </div>
+            <div class="form-group">
+                <button type="button" class="btn btn-primary" (click)="onSubmit(loginForm)">Log in</button>
+            </div>
+            <div class="form-group">
+                <p>
+                    <a id="forgot-password" href="./ForgotPassword">Forgot your password?</a>
+                </p>
+                <p>
+                    <a href="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
+                </p>
+                <p>
+                    <a id="resend-confirmation" href="./ResendEmailConfirmation">Resend email confirmation</a>
+                </p>
+            </div>
+        </form>
+    </div>
+</div>

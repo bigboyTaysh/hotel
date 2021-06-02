@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Rooms.Service.Models;
 using Rooms.Service.Services;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace Rooms.Service.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class RoomsController : ControllerBase

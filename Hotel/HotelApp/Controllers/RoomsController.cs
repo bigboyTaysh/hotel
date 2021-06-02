@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -17,15 +19,13 @@ namespace HotelApp.Controllers
     [ApiController]
     public class RoomsController : ControllerBase
     {
-        private readonly IConfiguration _config;
         private readonly HttpClient _client;
         private readonly string _roomsServiceUrl;
 
 
         public RoomsController(IConfiguration config)
         {
-            _config = config;
-            _roomsServiceUrl = _config.GetSection("Rooms.Service").GetSection("Connection").Value;
+            _roomsServiceUrl = config.GetSection("Rooms.Service").GetSection("UsersConnection").Value;
             _client = new HttpClient();
         }
 
