@@ -1,0 +1,30 @@
+<h1>Add room</h1>
+
+<p>{{ message | async }}</p>
+
+<form #form="ngForm">
+
+  <div class="form-group">
+    <label for="login">Number</label>
+    <input type="number" class="form-control" ngModel name="number" id="number" aria-describedby="loginHelp" placeholder="enter number">
+  </div>
+
+  <div class="form-group">
+    <label for="numberOfSeats">Number of Seats</label>
+    <input type="number" class="form-control" ngModel name="numberOfSeats" id="numberOfSeats" placeholder="enter seats number">
+  </div>
+
+  <div class="form-group">
+    <label for="price">Price</label>
+    <input type="number" class="form-control" ngModel name="price" id="price" placeholder="enter price">
+  </div>
+
+  <div class="form-group">
+    <label for="price">Description</label>
+    <input type="text" class="form-control" ngModel name="description" id="description" placeholder="enter description">
+  </div>
+
+  <button class="btn btn-primary" (click)="onSubmit(form)">Add</button>
+</form>
+<br />
+<a routerLink="/rooms" class="btn btn-primary">Back</a>

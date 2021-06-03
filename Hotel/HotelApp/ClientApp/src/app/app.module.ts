@@ -14,6 +14,12 @@ import { AuthorizeInterceptor } from 'src/api-authorization/authorize.intercepto
 import { UsersComponent } from './users/users.component';
 import { EditUserComponent } from './users/edit-user/edit-user.component';
 import { AddUserComponent } from './users/add-user/add-user.component';
+import { RoomsComponent } from './rooms/rooms.component';
+import { CustomersComponent } from './customers/customers.component';
+import { AddCustomerComponent } from './customers/add-customer/add-customer.component';
+import { EditCustomerComponent } from './customers/edit-customer/edit-customer.component';
+import { EditRoomsComponent } from './rooms/edit-rooms/edit-rooms.component';
+import { AddRoomsComponent } from './rooms/add-rooms/add-rooms.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +29,13 @@ import { AddUserComponent } from './users/add-user/add-user.component';
     CounterComponent,
     UsersComponent,
     EditUserComponent,
-    AddUserComponent
+    AddUserComponent,
+    RoomsComponent,
+    CustomersComponent,
+    AddCustomerComponent,
+    EditCustomerComponent,
+    EditRoomsComponent,
+    AddRoomsComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -33,9 +45,14 @@ import { AddUserComponent } from './users/add-user/add-user.component';
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'counter', component: CounterComponent },
+
       { path: 'users', component: UsersComponent, canActivate: [AuthorizeGuard], data: { roles: ['Admin'] } },
       { path: 'users/add', component: AddUserComponent, canActivate: [AuthorizeGuard], data: { roles: ['Admin'] } },
       { path: 'users/edit/:id', component: EditUserComponent, canActivate: [AuthorizeGuard], data: { roles: ['Admin'] } },
+
+      { path: 'rooms', component: RoomsComponent, canActivate: [AuthorizeGuard], data: { roles: ['Admin'] } },
+      { path: 'rooms/add', component: AddRoomsComponent, canActivate: [AuthorizeGuard], data: { roles: ['Admin'] } },
+      { path: 'rooms/edit/:id', component: EditRoomsComponent, canActivate: [AuthorizeGuard], data: { roles: ['Admin'] } },
     ])
   ],
   providers: [

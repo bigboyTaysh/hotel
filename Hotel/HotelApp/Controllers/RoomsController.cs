@@ -1,6 +1,7 @@
 ﻿using HotelApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -25,15 +26,20 @@ namespace HotelApp.Controllers
 
         public RoomsController(IConfiguration config)
         {
-            _roomsServiceUrl = config.GetSection("Rooms.Service").GetSection("UsersConnection").Value;
+            _roomsServiceUrl = config.GetSection("Rooms.Service").GetSection("Connection").Value;
             _client = new HttpClient();
         }
 
 
         // GET: api/<RoomsController>
         [HttpGet]
-        public async Task<ActionResult> GetAsync()
+        public async Task<ActionResult> Get()
         {
+            Request.Headers.TryGetValue("Authorization", out var token);
+            if (StringValues.IsNullOrEmpty(token))
+                return Unauthorized();
+            _client.DefaultRequestHeaders.Add("Authorization", token.FirstOrDefault());
+
             HttpResponseMessage response = await _client.GetAsync(_roomsServiceUrl);
 
             if (response.StatusCode == HttpStatusCode.OK)
@@ -50,6 +56,11 @@ namespace HotelApp.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult> Get(string id)
         {
+            Request.Headers.TryGetValue("Authorization", out var token);
+            if (StringValues.IsNullOrEmpty(token))
+                return Unauthorized();
+            _client.DefaultRequestHeaders.Add("Authorization", token.FirstOrDefault());
+
             HttpResponseMessage response = await _client.GetAsync(_roomsServiceUrl + id);
 
             if (response.StatusCode == HttpStatusCode.OK)
@@ -66,9 +77,14 @@ namespace HotelApp.Controllers
         [HttpPost]
         public async Task<ActionResult> Post(Room room)
         {
+            Request.Headers.TryGetValue("Authorization", out var token);
+
+            if (StringValues.IsNullOrEmpty(token))
+                return Unauthorized("Empty token");
+            _client.DefaultRequestHeaders.Add("Authorization", token.FirstOrDefault());
+
             string json = JsonConvert.SerializeObject(room);
             StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-
             HttpResponseMessage response = await _client.PostAsync(_roomsServiceUrl, httpContent);
 
             if (response.StatusCode == HttpStatusCode.OK)
@@ -82,13 +98,17 @@ namespace HotelApp.Controllers
         }
 
         // PUT api/<RoomsController>/5
-        [HttpPut("{id}")]
-        public async Task<ActionResult> Put(string id, Room room)
+        [HttpPut]
+        public async Task<ActionResult> Put(Room room)
         {
+            Request.Headers.TryGetValue("Authorization", out var token);
+            if (StringValues.IsNullOrEmpty(token))
+                return Unauthorized("Empty token");
+            _client.DefaultRequestHeaders.Add("Authorization", token.FirstOrDefault());
+
             string json = JsonConvert.SerializeObject(room);
             StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-
-            HttpResponseMessage response = await _client.PutAsync(_roomsServiceUrl + id, httpContent);
+            HttpResponseMessage response = await _client.PutAsync(_roomsServiceUrl, httpContent);
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
@@ -104,9 +124,22 @@ namespace HotelApp.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(string id)
         {
+            Request.Headers.TryGetValue("Authorization", out var token);
+
+            if (StringValues.IsNullOrEmpty(token))
+                return Unauthorized("Empty token");
+            _client.DefaultRequestHeaders.Add("Authorization", token.FirstOrDefault());
+
             HttpResponseMessage response = await _client.DeleteAsync(_roomsServiceUrl + id);
 
-            return StatusCode((int)response.StatusCode);
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                return Ok(response.Content.ReadAsStringAsync().Result);
+            }
+            else
+            {
+                return StatusCode((int)response.StatusCode);
+            }
         }
     }
 }

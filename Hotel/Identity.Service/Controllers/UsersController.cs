@@ -31,6 +31,7 @@ namespace Identity.Service.Controllers
             return Json(user);
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public ActionResult<User> Create(User user)
         {

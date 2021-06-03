@@ -53,10 +53,10 @@ namespace Rooms.Service.Controllers
         }
 
         // PUT api/<RoomsController>/5
-        [HttpPut("{id}")]
-        public ActionResult Put(string id, Room room)
+        [HttpPut]
+        public ActionResult Put(Room room)
         {
-            var result = service.Update(id, room);
+            var result = service.Update(room);
 
             if (result.MatchedCount == 0)
             {

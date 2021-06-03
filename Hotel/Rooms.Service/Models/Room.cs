@@ -16,7 +16,7 @@ namespace Rooms.Service.Models
         [BsonElement("Number")]
         public int Number { get; set; }
 
-        [BsonElement("Password")]
+        [BsonElement("NumberOfSeats")]
         public int NumberOfSeats { get; set; }
 
         [BsonElement("Price")]

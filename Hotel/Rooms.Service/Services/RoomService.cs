@@ -32,9 +32,9 @@ namespace Rooms.Service.Services
             return room;
         }
 
-        public ReplaceOneResult Update(string id, Room roomIn)
+        public ReplaceOneResult Update(Room roomIn)
         {
-            return _rooms.ReplaceOne(room => room.Id == id, roomIn);
+            return _rooms.ReplaceOne(room => room.Id == roomIn.Id, roomIn);
         }
 
         public DeleteResult Remove(string id)
