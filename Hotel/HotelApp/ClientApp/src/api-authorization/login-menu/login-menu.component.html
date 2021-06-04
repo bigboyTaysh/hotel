@@ -4,6 +4,10 @@
     </li>
 
     <li *ngIf="isInRole(['Admin', 'Employee'])" class="nav-item" [routerLinkActive]="['link-active']">
+        <a class="nav-link text-dark" [routerLink]="['/reservations']" >Reservations</a>
+    </li>
+
+    <li *ngIf="isInRole(['Admin', 'Employee'])" class="nav-item" [routerLinkActive]="['link-active']">
       <a class="nav-link text-dark" [routerLink]="['/rooms']" >Rooms</a>
     </li>
       
