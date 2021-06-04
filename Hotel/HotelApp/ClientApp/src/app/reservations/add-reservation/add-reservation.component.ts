@@ -40,12 +40,19 @@ export class AddReservationComponent {
 
     this.http.post<Room[]>(this.baseUrl + 'api/reservations/emptyRooms', request).subscribe(result => {
       this.emptyRooms = result;
+
+      this.selectedRooms.forEach(room => {
+        if(!this.emptyRooms.some(e => e.id === room.id)){
+          this.onRemove(room.id);
+        }
+      })
     }, error => console.error(error));
   }
 
   onAdd(id: string){
     let room = this.emptyRooms.find(x => x.id === id);
-    if(!this.selectedRooms.includes(room)){
+
+    if(!this.selectedRooms.some(e => e.id === room.id)){
       this.selectedRooms.push(room);
     }
   }
@@ -54,6 +61,18 @@ export class AddReservationComponent {
     let room = this.selectedRooms.find(x => x.id === id);
     let index = this.selectedRooms.indexOf(room, 0);
     this.selectedRooms.splice(index, 1);
+  }
+
+  onChangeStartDate(event){
+    this.startDate = event;
+    this.getEmptyRooms();
+  }
+
+  onChangeEndDate(event){
+    this.endDate = event;
+    if(new Date(this.endDate) > new Date(this.startDate)){
+      this.getEmptyRooms();
+    }
   }
 
   /*
