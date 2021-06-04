@@ -1,1 +1,27 @@
-<p>customers works!</p>
+<p *ngIf="!customers"><em>Loading...</em></p>
+
+<a [routerLink]="['add']" class="btn btn-primary">Add customer</a>
+<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="customers">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>firstname</th>
+      <th>lastname</th>
+      <th>birthdate</th>
+      <th>phone</th>
+      <th>Address</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let customer of customers">
+      <td>{{ customer.id }}</td>
+      <td>{{ customer.firstname }}</td>
+      <td>{{ customer.lastname }}</td>
+      <td>{{ customer.birthdate}}</td>
+      <td>{{ customer.phone }}</td>
+      <td>{{ customer.address.street }}</td>
+      <td><a [routerLink]="['edit', customer.id]">Edit</a></td>
+      <td><button class="btn btn-primary" (click)="onDelete(customer.id)">Delete</button></td>
+    </tr>
+  </tbody>
+</table>

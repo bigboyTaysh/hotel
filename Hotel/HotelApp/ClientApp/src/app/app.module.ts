@@ -53,6 +53,10 @@ import { AddRoomsComponent } from './rooms/add-rooms/add-rooms.component';
       { path: 'rooms', component: RoomsComponent, canActivate: [AuthorizeGuard], data: { roles: ['Admin'] } },
       { path: 'rooms/add', component: AddRoomsComponent, canActivate: [AuthorizeGuard], data: { roles: ['Admin'] } },
       { path: 'rooms/edit/:id', component: EditRoomsComponent, canActivate: [AuthorizeGuard], data: { roles: ['Admin'] } },
+
+      { path: 'customers', component: CustomersComponent, canActivate: [AuthorizeGuard], data: { roles: ['Admin'] } },
+      { path: 'customers/add', component: AddCustomerComponent, canActivate: [AuthorizeGuard], data: { roles: ['Admin'] } },
+      { path: 'customers/edit/:id', component: EditCustomerComponent, canActivate: [AuthorizeGuard], data: { roles: ['Admin'] } },
     ])
   ],
   providers: [

@@ -1,6 +1,7 @@
 ﻿using HotelApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -17,13 +18,13 @@ namespace HotelApp.Controllers
     {
         private readonly IConfiguration _config;
         private readonly HttpClient _client;
-        private readonly string _roomsServiceUrl;
+        private readonly string _customersServiceUrl;
 
 
         public CustomersController(IConfiguration config)
         {
             _config = config;
-            _roomsServiceUrl = _config.GetSection("Customers.Service").GetSection("Connection").Value;
+            _customersServiceUrl = _config.GetSection("Customers.Service").GetSection("Connection").Value;
             _client = new HttpClient();
         }
 
@@ -32,7 +33,12 @@ namespace HotelApp.Controllers
         [HttpGet]
         public async Task<ActionResult> GetAsync()
         {
-            HttpResponseMessage response = await _client.GetAsync(_roomsServiceUrl);
+            Request.Headers.TryGetValue("Authorization", out var token);
+            if (StringValues.IsNullOrEmpty(token))
+                return Unauthorized();
+            _client.DefaultRequestHeaders.Add("Authorization", token.FirstOrDefault());
+
+            HttpResponseMessage response = await _client.GetAsync(_customersServiceUrl);
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
@@ -48,7 +54,12 @@ namespace HotelApp.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult> Get(string id)
         {
-            HttpResponseMessage response = await _client.GetAsync(_roomsServiceUrl + id);
+            Request.Headers.TryGetValue("Authorization", out var token);
+            if (StringValues.IsNullOrEmpty(token))
+                return Unauthorized();
+            _client.DefaultRequestHeaders.Add("Authorization", token.FirstOrDefault());
+
+            HttpResponseMessage response = await _client.GetAsync(_customersServiceUrl + id);
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
@@ -64,10 +75,15 @@ namespace HotelApp.Controllers
         [HttpPost]
         public async Task<ActionResult> Post(Customer customer)
         {
+            Request.Headers.TryGetValue("Authorization", out var token);
+            if (StringValues.IsNullOrEmpty(token))
+                return Unauthorized("Empty token");
+            _client.DefaultRequestHeaders.Add("Authorization", token.FirstOrDefault());
+
             string json = JsonConvert.SerializeObject(customer);
             StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
 
-            HttpResponseMessage response = await _client.PostAsync(_roomsServiceUrl, httpContent);
+            HttpResponseMessage response = await _client.PostAsync(_customersServiceUrl, httpContent);
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
@@ -86,7 +102,7 @@ namespace HotelApp.Controllers
             string json = JsonConvert.SerializeObject(customer);
             StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
 
-            HttpResponseMessage response = await _client.PutAsync(_roomsServiceUrl + id, httpContent);
+            HttpResponseMessage response = await _client.PutAsync(_customersServiceUrl + id, httpContent);
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
@@ -102,7 +118,7 @@ namespace HotelApp.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(string id)
         {
-            HttpResponseMessage response = await _client.DeleteAsync(_roomsServiceUrl + id);
+            HttpResponseMessage response = await _client.DeleteAsync(_customersServiceUrl + id);
 
             return StatusCode((int)response.StatusCode);
         }
