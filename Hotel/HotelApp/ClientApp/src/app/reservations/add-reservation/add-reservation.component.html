@@ -1,1 +1,69 @@
 <p>add-reservation works!</p>
+<h1>Add user</h1>
+
+<p>{{ message | async }}</p>
+
+<form #form="ngForm">
+    <div class="form-group">
+      <label for="startDate">Start date</label>
+      <input type="date" class="form-control" [ngModel]="startDate" name="startDate" id="startDate">
+    </div>
+    <div class="form-group">
+        <label for="endDate">End date</label>
+        <input type="date" class="form-control" [ngModel]="endDate" name="endDate" id="endDate">
+      </div>
+
+    <p *ngIf="!emptyRooms"><em>Loading...</em></p>
+
+    <table class='table table-striped' aria-labelledby="tableLabel" *ngIf="emptyRooms">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>login</th>
+            <th>role</th>
+            <th></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let room of emptyRooms">
+            <td>{{ room.number }}</td>
+            <td>{{ room.numberOfSeats }}</td>
+            <td>{{ room.price }}</td>
+            <td><button class="btn btn-primary" (click)="onAdd(room.id)">Add</button></td>
+          </tr>
+        </tbody>
+      </table>
+
+
+      <p *ngIf="selectedRooms == []"><em>Empty</em></p>
+
+    <table class='table table-striped' aria-labelledby="tableLabel" *ngIf="selectedRooms">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>login</th>
+            <th>role</th>
+            <th></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let room of selectedRooms">
+            <td>{{ room.number }}</td>
+            <td>{{ room.numberOfSeats }}</td>
+            <td>{{ room.price }}</td>
+            <td><button class="btn btn-primary" (click)="onRemove(room.id)">Remove</button></td>
+          </tr>
+        </tbody>
+      </table>
+    <!-- 
+    <div class="form-group">
+        <label for="role">Select role</label>
+        <select class="form-control" ngModel name="role" id="role">
+          <option role="Admin">Admin</option>
+          <option value="Employee">Employee</option>
+        </select>
+      </div>
+    <button class="btn btn-primary" (click)="onSubmit(form)">Add</button> -->
+</form>
