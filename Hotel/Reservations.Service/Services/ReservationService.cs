@@ -39,5 +39,16 @@ namespace Reservations.Service.Services
         {
             return _reservations.DeleteOne(reservation => reservation.Id == id);
         }
+        public List<Room> GetEmptyRooms(List<Room> rooms, DateTime startDate, DateTime endDate)
+        {
+            var list = _reservations.Find(r => 
+                (r.StartDate > startDate && r.StartDate < endDate) ||
+                (r.EndDate > startDate && r.EndDate < endDate)).ToList().SelectMany(r => r.Rooms).Distinct().ToList();
+
+            
+            var newlist = rooms.Where(r => !list.Any(l => l.Id == r.Id)).ToList();
+            return newlist;
+        }
+
     }
 }
