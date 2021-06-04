@@ -3,6 +3,11 @@
 
 <p>{{ message | async }}</p>
 
+<div class="form-group">
+    <label for="startDate">Start date</label>
+    <label class="form-control" id="startDate">{{ customer.firstname + " " +  customer.lastname }}</label>
+</div>
+
 <form #form="ngForm">
     <div class="form-group">
       <label for="startDate">Start date</label>

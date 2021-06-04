@@ -17,7 +17,6 @@
       <td>{{ user.login }}</td>
       <td>{{ user.role }}</td>
       <td><a [routerLink]="['edit', user.id]">Edit</a></td>
-      <td><a [routerLink]="['edit', user.id]">Add reservation</a></td>
       <td><button class="btn btn-primary" (click)="onDelete(user.id)">Delete</button></td>
     </tr>
   </tbody>

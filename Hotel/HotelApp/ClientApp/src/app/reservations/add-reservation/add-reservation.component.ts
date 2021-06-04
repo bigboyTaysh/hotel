@@ -1,22 +1,26 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Inject, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
+import { User } from 'src/api-authorization/authorize.service';
 
 @Component({
   selector: 'app-add-reservation',
   templateUrl: './add-reservation.component.html',
   styleUrls: ['./add-reservation.component.css']
 })
-export class AddReservationComponent {
+export class AddReservationComponent implements OnInit {
   public rooms: Room[];
   public emptyRooms: Room[];
   public startDate: string;
   public endDate: string;
   public selectedRooms: Room[] = [];
   public message = new BehaviorSubject<string>(null);
+  public id: string;
+  public customer: Customer;
 
 
-  constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) {
+  constructor(private route: ActivatedRoute, private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) {
     let startDate = new Date();
     startDate.setUTCHours(0,0,0,0);
     this.startDate = startDate.toISOString().split('T')[0];
@@ -28,6 +32,29 @@ export class AddReservationComponent {
     http.get<Room[]>(baseUrl + 'api/rooms').subscribe(result => {
       this.rooms = result;
       this.getEmptyRooms();
+    }, error => console.error(error));
+  }
+
+  ngOnInit() {
+    this.id = this.route.snapshot.paramMap.get('id');
+
+    this.customer = {
+      id: '',
+      firstname: '',
+      lastname: '',
+      birthdate:  new Date(),
+      phone: '',
+      email: '',
+      address: {
+        street: '',
+        zipcode: '',
+        city: '',
+        country: '',
+      }
+    }
+
+    this.http.get<Customer>(this.baseUrl + 'api/customers/' + this.id).subscribe(result => {
+      this.customer = result;
     }, error => console.error(error));
   }
 
@@ -91,4 +118,21 @@ interface Room {
   numberOfSeats: number;
   price: number;
   description: string;
+}
+
+interface Customer {
+  id: string;
+  firstname: string;
+  lastname: string;
+  birthdate: Date;
+  phone: string;
+  email: string;
+  address: Address;
+}
+
+interface Address {
+  street: string;
+  zipcode: string;
+  city: string;
+  country: string;
 }
