@@ -1,0 +1,23 @@
+<p *ngIf="!reservations"><em>Loading...</em></p>
+
+<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="reservations">
+  <thead>
+    <tr>
+      <th>id</th>
+      <th>customer id</th>
+      <th>start date</th>
+      <th>end date</th>
+      <th>price</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let reservation of reservations">
+      <td>{{ reservation.id }}</td>
+      <td>{{ reservation.customerId }}</td>
+      <td>{{ reservation.startDate }}</td>
+      <td>{{ reservation.endDate }}</td>
+      <td>{{ reservation.price }}</td>
+      <td><button class="btn btn-primary" (click)="onDelete(reservation.id)">Delete</button></td>
+    </tr>
+  </tbody>
+</table>

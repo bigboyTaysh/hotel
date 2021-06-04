@@ -17,9 +17,6 @@ namespace HotelApp.Models
 
         public double Price { get; set; }
 
-        /* póki co zostawiam zakomentowane
-        [BsonElement("Rooms")]
-        public virtual List<Room> Rooms { get; set; }
-        */
+        public List<Room> Rooms { get; set; }
     }
 }

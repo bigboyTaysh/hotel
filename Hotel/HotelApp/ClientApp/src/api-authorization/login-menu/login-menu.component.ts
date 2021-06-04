@@ -32,7 +32,8 @@ export class LoginMenuComponent implements OnInit {
     return bool;
   }
 
-  isInRole(role: string){
-    return this.role === role ? true : false;
+  isInRole(role: string[]){
+    
+    return role.includes(this.role);
   }
 }

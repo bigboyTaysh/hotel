@@ -20,6 +20,8 @@ import { AddCustomerComponent } from './customers/add-customer/add-customer.comp
 import { EditCustomerComponent } from './customers/edit-customer/edit-customer.component';
 import { EditRoomsComponent } from './rooms/edit-rooms/edit-rooms.component';
 import { AddRoomsComponent } from './rooms/add-rooms/add-rooms.component';
+import { ReservationsComponent } from './reservations/reservations.component';
+import { AddReservationComponent } from './reservations/add-reservation/add-reservation.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +37,9 @@ import { AddRoomsComponent } from './rooms/add-rooms/add-rooms.component';
     AddCustomerComponent,
     EditCustomerComponent,
     EditRoomsComponent,
-    AddRoomsComponent
+    AddRoomsComponent,
+    ReservationsComponent,
+    AddReservationComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -50,13 +54,16 @@ import { AddRoomsComponent } from './rooms/add-rooms/add-rooms.component';
       { path: 'users/add', component: AddUserComponent, canActivate: [AuthorizeGuard], data: { roles: ['Admin'] } },
       { path: 'users/edit/:id', component: EditUserComponent, canActivate: [AuthorizeGuard], data: { roles: ['Admin'] } },
 
-      { path: 'rooms', component: RoomsComponent, canActivate: [AuthorizeGuard], data: { roles: ['Admin'] } },
-      { path: 'rooms/add', component: AddRoomsComponent, canActivate: [AuthorizeGuard], data: { roles: ['Admin'] } },
-      { path: 'rooms/edit/:id', component: EditRoomsComponent, canActivate: [AuthorizeGuard], data: { roles: ['Admin'] } },
+      { path: 'rooms', component: RoomsComponent, canActivate: [AuthorizeGuard], data: { roles: ['Admin', 'Employee'] } },
+      { path: 'rooms/add', component: AddRoomsComponent, canActivate: [AuthorizeGuard], data: { roles: ['Admin', 'Employee'] } },
+      { path: 'rooms/edit/:id', component: EditRoomsComponent, canActivate: [AuthorizeGuard], data: { roles: ['Admin', 'Employee'] } },
 
-      { path: 'customers', component: CustomersComponent, canActivate: [AuthorizeGuard], data: { roles: ['Admin'] } },
-      { path: 'customers/add', component: AddCustomerComponent, canActivate: [AuthorizeGuard], data: { roles: ['Admin'] } },
-      { path: 'customers/edit/:id', component: EditCustomerComponent, canActivate: [AuthorizeGuard], data: { roles: ['Admin'] } },
+      { path: 'customers', component: CustomersComponent, canActivate: [AuthorizeGuard], data: { roles: ['Admin', 'Employee'] } },
+      { path: 'customers/add', component: AddCustomerComponent, canActivate: [AuthorizeGuard], data: { roles: ['Admin', 'Employee'] } },
+      { path: 'customers/edit/:id', component: EditCustomerComponent, canActivate: [AuthorizeGuard], data: { roles: ['Admin', 'Employee'] } },
+
+      { path: 'reservations', component: ReservationsComponent, canActivate: [AuthorizeGuard], data: { roles: ['Admin', 'Employee'] } },
+      { path: 'reservations/add/:id', component: AddReservationComponent, canActivate: [AuthorizeGuard], data: { roles: ['Admin', 'Employee'] } },
     ])
   ],
   providers: [
