@@ -1,0 +1,25 @@
+<p *ngIf="!rooms"><em>Loading...</em></p>
+
+<a [routerLink]="['add']" class="btn btn-primary">Add room</a>
+<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="rooms">
+  <thead>
+    <tr>
+      <th> ID </th>
+      <th> number </th>
+      <th> seats number </th>
+      <th> price </th>
+      <th> description </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let room of rooms">
+      <td>{{ room.id }}</td>
+      <td>{{ room.number }}</td>
+      <td>{{ room.numberOfSeats }}</td>
+      <td>{{ room.price }}</td>
+      <td>{{ room.description }}</td>
+      <td><a [routerLink]="['edit', room.id]">Edit</a></td>
+      <td><button class="btn btn-primary" (click)="onDelete(room.id)">Delete</button></td>
+    </tr>
+  </tbody>
+</table>

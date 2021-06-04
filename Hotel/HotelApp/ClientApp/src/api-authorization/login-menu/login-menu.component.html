@@ -1,0 +1,33 @@
+<ul class="navbar-nav" *ngIf="isAuthenticated | async">
+    <li *ngIf="isInRole(['Admin', 'Employee'])" class="nav-item" [routerLinkActive]="['link-active']">
+        <a class="nav-link text-dark" [routerLink]="['/customers']" >Customers</a>
+    </li>
+
+    <li *ngIf="isInRole(['Admin', 'Employee'])" class="nav-item" [routerLinkActive]="['link-active']">
+        <a class="nav-link text-dark" [routerLink]="['/reservations']" >Reservations</a>
+    </li>
+
+    <li *ngIf="isInRole(['Admin', 'Employee'])" class="nav-item" [routerLinkActive]="['link-active']">
+      <a class="nav-link text-dark" [routerLink]="['/rooms']" >Rooms</a>
+    </li>
+      
+    <li *ngIf="isInRole(['Admin'])" class="nav-item" [routerLinkActive]="['link-active']">
+        <a class="nav-link text-dark" [routerLink]="['/users']">Users</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-dark" [routerLink]='["/authentication/profile"]' title="Manage">Hello {{ userName |
+            async }}</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-dark" [routerLink]='["/authentication/logout"]' [state]='{ local: true }'
+            title="Logout">Logout</a>
+    </li>
+</ul>
+<ul class="navbar-nav" *ngIf="!(isAuthenticated | async)">
+    <li class="nav-item">
+        <a class="nav-link text-dark" [routerLink]='["/authentication/register"]'>Register</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-dark" [routerLink]='["/authentication/login"]'>Login</a>
+    </li>
+</ul>
