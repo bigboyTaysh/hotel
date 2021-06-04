@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rooms.Service", "Rooms.Serv
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reservations.Service", "Reservations.Service\Reservations.Service.csproj", "{2D060290-E122-4498-B3CE-3C3CF306F3C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HotelApp", "HotelApp\HotelApp.csproj", "{BA910765-6227-4E9B-A130-88BEF1651743}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HotelApp", "HotelApp\HotelApp.csproj", "{BA910765-6227-4E9B-A130-88BEF1651743}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
