@@ -45,9 +45,9 @@ public class ReservationsController : ControllerBase
         // GET api/<ReservationsController>/5
         [HttpPost]
         [Route("emptyRooms")]
-        public IEnumerable<Room> GetEmptyRooms(List<Room> rooms, DateTime startDate, DateTime endDate)
+        public IEnumerable<Room> GetEmptyRooms(EmptyRoomsRequest request)
         {
-            return service.GetEmptyRooms(rooms, startDate, endDate);
+            return service.GetEmptyRooms(request.Rooms, request.StartDate, request.EndDate);
         }
 
         // POST api/<ReservationsController>

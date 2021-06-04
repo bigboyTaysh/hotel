@@ -1,4 +1,5 @@
 ﻿using HotelApp.Models;
+using HotelApp.Service.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -60,6 +61,31 @@ namespace HotelApp.Controllers
             {
                 return StatusCode((int)response.StatusCode);
             }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> GetE(string id)
+        {
+            HttpResponseMessage response = await _client.GetAsync(_reservationsServiceUrl + id);
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                return Ok(response.Content.ReadAsStringAsync().Result);
+            }
+            else
+            {
+                return StatusCode((int)response.StatusCode);
+            }
+        }
+
+        [HttpPost]
+        [Route("emptyRooms")]
+        public async Task<ActionResult> GetEmptyRooms(EmptyRoomsRequest request)
+        {
+            StringContent httpContent = new StringContent(JsonConvert.SerializeObject(request), System.Text.Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await _client.PostAsync(_reservationsServiceUrl, httpContent);
+
+            return Ok(response.Content.ReadAsStringAsync().Result);
         }
 
         // POST api/<ReservationsController>

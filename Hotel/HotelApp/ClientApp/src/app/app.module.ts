@@ -21,6 +21,7 @@ import { EditCustomerComponent } from './customers/edit-customer/edit-customer.c
 import { EditRoomsComponent } from './rooms/edit-rooms/edit-rooms.component';
 import { AddRoomsComponent } from './rooms/add-rooms/add-rooms.component';
 import { ReservationsComponent } from './reservations/reservations.component';
+import { AddReservationComponent } from './reservations/add-reservation/add-reservation.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { ReservationsComponent } from './reservations/reservations.component';
     EditCustomerComponent,
     EditRoomsComponent,
     AddRoomsComponent,
-    ReservationsComponent
+    ReservationsComponent,
+    AddReservationComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -61,6 +63,7 @@ import { ReservationsComponent } from './reservations/reservations.component';
       { path: 'customers/edit/:id', component: EditCustomerComponent, canActivate: [AuthorizeGuard], data: { roles: ['Admin', 'Employee'] } },
 
       { path: 'reservations', component: ReservationsComponent, canActivate: [AuthorizeGuard], data: { roles: ['Admin', 'Employee'] } },
+      { path: 'reservations/add', component: AddReservationComponent, canActivate: [AuthorizeGuard], data: { roles: ['Admin', 'Employee'] } },
     ])
   ],
   providers: [
