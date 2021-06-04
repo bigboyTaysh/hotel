@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Inject, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { User } from 'src/api-authorization/authorize.service';
@@ -102,14 +103,26 @@ export class AddReservationComponent implements OnInit {
     }
   }
 
-  /*
-  onDelete(id: string){
-    this.http.delete<Reservation[]>(this.baseUrl + 'api/reservations/' + id).subscribe(result => {
-      
-      let index = this.reservations.indexOf(reservation, 0);
-      this.reservations.splice(index, 1);
-    }, error => console.error(error));
-  }*/
+  async addReservation() {
+    const reservation = {
+      id: '',
+      customerId: this.customer.id,
+      startDate: this.startDate,
+      endDate: this.endDate,
+      price: this.getPrice(),
+      rooms: this.selectedRooms
+    }
+
+    this.http.post(this.baseUrl + 'api/reservations', reservation).subscribe(result => {
+    }, error => this.message.next(error.error));
+  }
+
+  getPrice(){
+    const time = new Date(this.endDate).getTime() - new Date(this.startDate).getTime();
+    const days = time / (1000 * 3600 * 24)
+
+    return this.selectedRooms.reduce((a, b) => a + b.price * days, 0);
+  }
 }
 
 interface Room {
