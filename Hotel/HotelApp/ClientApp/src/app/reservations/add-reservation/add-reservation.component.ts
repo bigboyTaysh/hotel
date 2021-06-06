@@ -11,8 +11,8 @@ import { User } from 'src/api-authorization/authorize.service';
   styleUrls: ['./add-reservation.component.css']
 })
 export class AddReservationComponent implements OnInit {
-  public rooms: Room[];
-  public emptyRooms: Room[];
+  public rooms: Room[] = [];
+  public emptyRooms: Room[] = [];
   public startDate: string;
   public endDate: string;
   public selectedRooms: Room[] = [];
@@ -104,6 +104,16 @@ export class AddReservationComponent implements OnInit {
   }
 
   async addReservation() {
+    if(new Date(this.startDate).getTime() === new Date(this.endDate).getTime()){
+      this.message.next("Start date and end date can't be the same");
+      return;
+    }
+
+    if(this.selectedRooms.length < 1 ){
+      this.message.next("Select the rooms to book");
+      return;
+    }
+
     const reservation = {
       id: '',
       customerId: this.customer.id,
