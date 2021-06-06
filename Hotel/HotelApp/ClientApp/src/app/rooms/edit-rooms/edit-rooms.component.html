@@ -1,6 +1,6 @@
 <p>{{ message | async }}</p>
 
-<form #form="ngForm">
+<form #form="ngForm" class="col-md-4 mb-3">
 
   <div class="form-group">
     <label for="id">Id</label>
@@ -24,7 +24,7 @@
 
   <div class="form-group">
     <label for="login">Description</label>
-    <input type="text" class="form-control" [ngModel]="room.description" name="description" id="description" placeholder="enter description">
+    <textarea class="form-control" [ngModel]="room.description" name="description" id="description" placeholder="enter description"></textarea>
   </div>
 
   <button class="btn btn-primary" (click)="onSubmit(form)">Edit</button>

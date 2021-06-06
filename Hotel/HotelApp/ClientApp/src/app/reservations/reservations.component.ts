@@ -11,14 +11,7 @@ export class ReservationsComponent{
 
   constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) {
     http.get<Reservation[]>(baseUrl + 'api/reservations').subscribe(result => {
-
-      for (var item of result) {
-        item.startDate = item.startDate.substring(0, 10);
-        item.endDate = item.endDate.substring(0, 10);
-      }
-
       this.reservations = result;
-
     }, error => console.error(error));
   }
 
