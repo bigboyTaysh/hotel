@@ -43,7 +43,7 @@ export class AddCustomerComponent implements OnInit {
     console.log(customerInput);
     this.http.post<Customer>(this.baseUrl + 'api/customers', customerInput).subscribe(result => {
       this.customer = result;
-      this.message.next('Customer "' + this.customer.firstname + '" was added successfully.');
+      this.message.next('Customer "' + this.customer.firstname + " " + this.customer.lastname + '" was added successfully.');
       form.reset();
     }, error => this.message.next(error.error));
   }

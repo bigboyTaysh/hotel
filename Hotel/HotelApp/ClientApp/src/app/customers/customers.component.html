@@ -17,11 +17,11 @@
       <td>{{ customer.id }}</td>
       <td>{{ customer.firstname }}</td>
       <td>{{ customer.lastname }}</td>
-      <td>{{ customer.birthdate}}</td>
+      <td>{{ customer.birthdate | date:'yyyy-MM-dd'}}</td>
       <td>{{ customer.phone }}</td>
       <td>{{ customer.address.street }}</td>
-      <td><a [routerLink]="['/reservations/add', customer.id]">Add reservation</a></td>
-      <td><a [routerLink]="['edit', customer.id]">Edit</a></td>
+      <td><a [routerLink]="['/reservations/add', customer.id]" class="btn btn-primary">Add reservation</a></td>
+      <td><a [routerLink]="['edit', customer.id]" class="btn btn-primary">Edit</a></td>
       <td><button class="btn btn-primary" (click)="onDelete(customer.id)">Delete</button></td>
     </tr>
   </tbody>

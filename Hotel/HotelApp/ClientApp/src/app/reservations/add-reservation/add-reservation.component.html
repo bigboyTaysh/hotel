@@ -4,7 +4,7 @@
 
 <div class="form-group">
   <label for="startDate">Start date</label>
-  <label class="form-control" id="startDate">{{ customer.firstname + " " +  customer.lastname }}</label>
+  <label class="form-control" id="startDate">{{ customer.firstname + " " + customer.lastname }}</label>
 </div>
 
 <form #form="ngForm">
@@ -48,7 +48,7 @@
   <br />
   <br />
 
-  <p *ngIf="selectedRooms.length <= 0"><em></em></p>
+  <p *ngIf="selectedRooms.length <= 0"><em>Empty</em></p>
 
   <div *ngIf="selectedRooms.length > 0">
     <h3>Selected rooms:</h3>
