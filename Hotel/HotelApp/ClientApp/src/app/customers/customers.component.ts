@@ -9,9 +9,16 @@ import { NgForm } from '@angular/forms';
 })
 export class CustomersComponent {
   public customers: Customer[];
-  public searchText;
+  public filter: CustomerFilter;
 
   constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) {
+    this.filter = {
+      id: "",
+      name: "",
+      phone: "",
+      email: "",
+    }
+    
     http.get<Customer[]>(baseUrl + 'api/customers').subscribe(result => {
       this.customers = result;
     }, error => console.error(error));
@@ -26,13 +33,15 @@ export class CustomersComponent {
   }
 
   onSearch(form: NgForm) {
-    this.searchText = form.value.searchText;
-    this.getCustomerByName(this.searchText);
+    this.filter.id = form.value.id;
+    this.filter.name = form.value.name;
+    this.filter.email = form.value.email;
+    this.filter.phone = form.value.phone;
+    this.getCustomerByName();
   }
 
-  async getCustomerByName(searchText) {
-    console.log(searchText);
-    this.http.get<Customer[]>(this.baseUrl + 'api/customers/customerByName/' + searchText).subscribe(result => {
+  async getCustomerByName() {
+    this.http.post<Customer[]>(this.baseUrl + 'api/customers/customerByName', this.filter).subscribe(result => {
       this.customers = result;
     }, error => console.error(error));
   }
@@ -55,3 +64,9 @@ interface Address {
   country: string;
 }
 
+interface CustomerFilter {
+  id: string;
+  name: string;
+  phone: string;
+  email: string;
+}

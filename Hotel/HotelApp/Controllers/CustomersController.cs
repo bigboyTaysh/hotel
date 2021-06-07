@@ -72,16 +72,19 @@ namespace HotelApp.Controllers
         }
 
 
-        [HttpGet("customerByName/{name}")]
+        [HttpPost("customerByName")]
         //[Route("customerReservations")]
-        public async Task<ActionResult> GetCustomerByName(string name)
+        public async Task<ActionResult> GetCustomerByName(CustomerFilter customer)
         {
             Request.Headers.TryGetValue("Authorization", out var token);
             if (StringValues.IsNullOrEmpty(token))
                 return Unauthorized();
             _client.DefaultRequestHeaders.Add("Authorization", token.FirstOrDefault());
 
-            HttpResponseMessage response = await _client.GetAsync(_customersServiceUrl + "customerByName/" + name);
+            string json = JsonConvert.SerializeObject(customer);
+            StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+
+            HttpResponseMessage response = await _client.PostAsync(_customersServiceUrl + "customerByName", httpContent);
 
             if (response.StatusCode == HttpStatusCode.OK)
             {

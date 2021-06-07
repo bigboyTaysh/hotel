@@ -31,8 +31,6 @@ export class CustomerDetailsComponent implements OnInit {
     }, error => console.error(error));
 
   }
-
-
 }
 
 interface Customer {

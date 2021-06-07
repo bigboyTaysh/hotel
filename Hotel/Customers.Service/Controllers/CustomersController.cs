@@ -42,11 +42,11 @@ namespace Customers.Service.Controllers
             return Ok(customer);
         }
 
-        [HttpGet("customerByName/{name}")]
+        [HttpPost("customerByName")]
         //[Route("customerReservations")]
-        public IEnumerable<Customer> GetCustomerByName(string name)
+        public IEnumerable<Customer> GetCustomerByName(CustomerFilter customer)
         {
-            var customers = service.GetCustomerByName(name);
+            var customers = service.GetCustomerByName(customer);
             return customers;
         }
 

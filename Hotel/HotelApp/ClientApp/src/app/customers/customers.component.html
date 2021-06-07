@@ -1,15 +1,35 @@
+<h1>Customers list</h1>
 <p *ngIf="!customers"><em>Loading...</em></p>
 
+<h3>filter</h3>
 <form #form="ngForm">
-
-  <div>
-    <div class="form-group">
-      <label for="search-text">Search Text</label>
-      <input type="email" class="form-control" ngModel name="searchText" id="searchText" aria-describedby="searchText" placeholder="Enter text to search" autofocus>
+  <div class="form-row">
+    <div class="form-group col-md-3 mb-3">
+      <label for="search-text">ID</label>
+      <input type="text" class="form-control" (ngModelChange)="onSearch(form)" [ngModel]="filter.id" name="id" id="id"
+        placeholder="Enter id" autofocus>
+      <small id="idHelp" class="form-text text-muted">Must be 24 digit hex string</small>
+    </div>
+    <div class="form-group col-md-3 mb-3">
+      <label for="search-text">Name</label>
+      <input type="text" class="form-control" (ngModelChange)="onSearch(form)" [ngModel]="filter.name" name="name"
+        id="name" placeholder="Enter name" autofocus>
     </div>
   </div>
 
-  <button class="btn btn-primary btn-sm" (click)="onSearch(form)">Search</button> &nbsp;&nbsp;
+  <div class="form-row">
+    <div class="form-group col-md-3 mb-3">
+      <label for="search-text">Email</label>
+      <input type="text" class="form-control" (ngModelChange)="onSearch(form)" [ngModel]="filter.email" name="email"
+        id="email" placeholder="Enter email" autofocus>
+    </div>
+    <div class="form-group col-md-3 mb-3">
+      <label for="search-text">Phone</label>
+      <input type="text" class="form-control" (ngModelChange)="onSearch(form)" [ngModel]="filter.phone" name="phone"
+        id="phone" placeholder="Enter phone" autofocus>
+    </div>
+  </div>
+
   <a [routerLink]="['add']" class="btn btn-primary btn-sm">Add customer</a>
 </form>
 
@@ -27,25 +47,17 @@
     </tr>
   </thead>
   <tbody>
-    <ng-container *ngFor="let customer of customers">
-      <tr [routerLink]="['/customer', customer.id]" class="clickable">
-          <td>{{ customer.id }}</td>
-          <td>{{ customer.firstname }}</td>
-          <td>{{ customer.lastname }}</td>
-          <td>{{ customer.birthdate | date:'yyyy-MM-dd'}}</td>
-          <td>{{ customer.email }}</td>
-          <td>{{ customer.phone }}</td>
-        <td><a [routerLink]="['/reservations/add', customer.id]" class="btn btn-success btn-sm text-nowrap">Add
-            reservation</a></td>
-        <td><a [routerLink]="['edit', customer.id]" class="btn btn-primary btn-sm">Edit</a></td>
-        <td><button class="btn btn-danger btn-sm" (click)="onDelete(customer.id)">Delete</button></td>
-      </tr>
-      <tr>
-        <td>{{ customer.address.street }}</td>
-        <td>{{ customer.address.city }}</td>
-        <td>{{ customer.address.zipCode }}</td>
-        <td>{{ customer.address.country }}</td>
-      </tr>
-    </ng-container>
+    <tr [routerLink]="['/customer', customer.id]" class="clickable" *ngFor="let customer of customers">
+      <td>{{ customer.id }}</td>
+      <td>{{ customer.firstname }}</td>
+      <td>{{ customer.lastname }}</td>
+      <td>{{ customer.birthdate | date:'yyyy-MM-dd'}}</td>
+      <td>{{ customer.email }}</td>
+      <td>{{ customer.phone }}</td>
+      <td><a [routerLink]="['/reservations/add', customer.id]" class="btn btn-success btn-sm text-nowrap">Add
+          reservation</a></td>
+      <td><a [routerLink]="['edit', customer.id]" class="btn btn-primary btn-sm">Edit</a></td>
+      <td><button class="btn btn-danger btn-sm" (click)="onDelete(customer.id)">Delete</button></td>
+    </tr>
   </tbody>
 </table>

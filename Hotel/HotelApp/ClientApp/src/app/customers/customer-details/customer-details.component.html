@@ -58,8 +58,8 @@
 <br />
 
 <h3> Reservations </h3>
-<p *ngIf="!reservations"><em>There are currently no reservations for this user.</em></p>
-<div *ngIf="reservations">
+<p *ngIf="reservations.length < 1"><em>There are currently no reservations for this user.</em></p>
+<div *ngIf="reservations.length > 0">
   <table class='table table-striped' aria-labelledby="tableLabel">
     <thead>
       <tr>
@@ -76,7 +76,7 @@
         <td>{{ reservation.startDate | date:'yyyy-MM-dd' }}</td>
         <td>{{ reservation.endDate | date:'yyyy-MM-dd' }}</td>
         <td>{{ reservation.price }}</td>
-        <td> <p *ngFor="let room of reservation.rooms"> {{ room.number }} </p> </td>
+        <td> <label *ngFor="let room of reservation.rooms"> {{ room.number.toString() + "&nbsp;" }}  </label> </td>
       </tr>
     </tbody>
   </table>

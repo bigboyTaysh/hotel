@@ -1,11 +1,13 @@
 ﻿using Customers.Service.DAL;
 using Customers.Service.Models;
 using Microsoft.Extensions.Configuration;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 namespace Identity.Service.Services
 {
@@ -41,10 +43,26 @@ namespace Identity.Service.Services
             return _customers.DeleteOne(customer => customer.Id == id);
         }
 
-        public List<Customer> GetCustomerByName(string name)
+        public List<Customer> GetCustomerByName(CustomerFilter customerFilter)
         {
-            var list = _customers.Find(customer => customer.Firstname == name).ToList();
-            return list;
+
+            if (customerFilter.Id != "" && customerFilter.Id.Length == 24)
+            {
+                return _customers.Find(customer =>
+                customer.Id == customerFilter.Id &&
+                (customer.Firstname.Contains(customerFilter.Name) || customer.Lastname.Contains(customerFilter.Name)) &&
+                customer.Email.Contains(customerFilter.Email) &&
+                customer.Phone.Contains(customerFilter.Phone)).ToList();
+            }
+            else
+            {
+                return _customers.Find(customer =>
+                (customer.Firstname.Contains(customerFilter.Name) || customer.Lastname.Contains(customerFilter.Name)) &&
+                customer.Email.Contains(customerFilter.Email) &&
+                customer.Phone.Contains(customerFilter.Phone)).ToList();
+            }
+            
+            //var list = _customers.Find(new BsonDocument { { "_id", new BsonDocument { { "$regex", customerFilter.Id } } } }).ToList();
         }
 
     }
