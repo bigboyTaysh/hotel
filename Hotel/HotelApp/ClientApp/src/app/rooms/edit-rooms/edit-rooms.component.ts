@@ -16,7 +16,7 @@ export class EditRoomsComponent implements OnInit {
   id: string;
 
 
-  constructor(private route: ActivatedRoute, private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) { this.http = http; this.baseUrl = baseUrl; }
+  constructor(private route: ActivatedRoute, private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) { }
 
 
   ngOnInit() {

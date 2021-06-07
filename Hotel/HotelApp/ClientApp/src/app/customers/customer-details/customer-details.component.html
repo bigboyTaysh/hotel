@@ -1,1 +1,56 @@
-<p>customer-details works!</p>
+<h1>Add customer</h1>
+
+<p>{{ message | async }}</p>
+
+<div class="container">
+  <div *ngIf="customer">
+    <div class="form-row">
+      <div class="form-group col-md-8 mb-3">
+        <label>Firstname, lastname</label>
+        <label class="form-control">{{ customer.firstname + " " + customer.lastname }}</label>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group col-md-4 mb-3">
+        <label>Email</label>
+        <label class="form-control">{{ customer.email }}</label>
+      </div>
+
+      <div class="form-group col-md-4 mb-3">
+        <label>Phone</label>
+        <label class="form-control">{{ customer.phone }}</label>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group col-md-4">
+        <label>Birthdate</label>
+        <label type="date" class="form-control">{{ customer.birthdate | date: "yyyy-MM-dd" }}</label>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-4 mb-3">
+        <label>Street</label>
+        <label type="text" class="form-control">{{ customer.address.street }}</label>
+      </div>
+      <div class="form-group col-md-4 mb-3">
+        <label>City</label>
+        <label type="text" class="form-control">{{ customer.address.city }}</label>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group col-md-4 mb-3">
+        <label for="login">Zipcode</label>
+        <label type="text" class="form-control">{{ customer.address.zipCode }}</label>
+      </div>
+      <div class="form-group col-md-4 mb-3">
+        <label for="login">Country</label>
+        <label type="text" class="form-control">{{ customer.address.country }}</label>
+      </div>
+    </div>
+  </div>
+</div>
+<br />
+<a routerLink="/customers" class="btn btn-primary">Back</a>
