@@ -63,6 +63,7 @@ import { CustomerDetailsComponent } from './customers/customer-details/customer-
       { path: 'customers', component: CustomersComponent, canActivate: [AuthorizeGuard], data: { roles: ['Admin', 'Employee'] } },
       { path: 'customers/add', component: AddCustomerComponent, canActivate: [AuthorizeGuard], data: { roles: ['Admin', 'Employee'] } },
       { path: 'customers/edit/:id', component: EditCustomerComponent, canActivate: [AuthorizeGuard], data: { roles: ['Admin', 'Employee'] } },
+      { path: 'customer/:id', component: CustomerDetailsComponent, canActivate: [AuthorizeGuard], data: { roles: ['Admin', 'Employee'] } },
 
       { path: 'reservations', component: ReservationsComponent, canActivate: [AuthorizeGuard], data: { roles: ['Admin', 'Employee'] } },
       { path: 'reservations/add/:id', component: AddReservationComponent, canActivate: [AuthorizeGuard], data: { roles: ['Admin', 'Employee'] } },
