@@ -10,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using Steeltoe.Discovery.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,6 +38,8 @@ namespace Customers.Service
 
             services.AddSingleton<CustomerService>();
 
+            services.AddDiscoveryClient(Configuration);
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -53,6 +56,8 @@ namespace Customers.Service
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Customers.Service v1"));
             }
+
+            app.UseDiscoveryClient();
 
             app.UseHttpsRedirection();
 
