@@ -1,6 +1,20 @@
 <p *ngIf="!customers"><em>Loading...</em></p>
 
-<a [routerLink]="['add']" class="btn btn-primary">Add customer</a>
+<form #form="ngForm">
+
+  <div>
+    <div class="form-group">
+      <label for="search-text">Search Text</label>
+      <input type="email" class="form-control" ngModel name="search-text" id="search-text" aria-describedby="search-text" placeholder="Enter text to search" autofocus>
+    </div>
+  </div>
+
+  <button class="btn btn-primary btn-sm" (click)="onSearch(form)">Search</button> &nbsp;&nbsp;
+  <a [routerLink]="['add']" class="btn btn-primary btn-sm">Add customer</a>
+</form>
+
+
+<br />
 <table class='table table-striped' aria-labelledby="tableLabel" *ngIf="customers">
   <thead>
     <tr>

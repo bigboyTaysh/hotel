@@ -24,6 +24,7 @@ import { ReservationsComponent } from './reservations/reservations.component';
 import { AddReservationComponent } from './reservations/add-reservation/add-reservation.component';
 import { CustomerDetailsComponent } from './customers/customer-details/customer-details.component';
 
+
 @NgModule({
   declarations: [
     AppComponent,

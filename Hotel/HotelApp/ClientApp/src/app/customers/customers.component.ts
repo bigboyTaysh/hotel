@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Inject, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-customers',
@@ -8,6 +9,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 })
 export class CustomersComponent {
   public customers: Customer[];
+  public searchText;
 
   constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) {
     http.get<Customer[]>(baseUrl + 'api/customers').subscribe(result => {
@@ -22,7 +24,7 @@ export class CustomersComponent {
       this.customers.splice(index, 1);
     }, error => console.error(error));
   }
-}
+
 
 interface Customer {
   id: string;
