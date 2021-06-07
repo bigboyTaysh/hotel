@@ -22,6 +22,7 @@ import { EditRoomsComponent } from './rooms/edit-rooms/edit-rooms.component';
 import { AddRoomsComponent } from './rooms/add-rooms/add-rooms.component';
 import { ReservationsComponent } from './reservations/reservations.component';
 import { AddReservationComponent } from './reservations/add-reservation/add-reservation.component';
+import { CustomerDetailsComponent } from './customers/customer-details/customer-details.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { AddReservationComponent } from './reservations/add-reservation/add-rese
     EditRoomsComponent,
     AddRoomsComponent,
     ReservationsComponent,
-    AddReservationComponent
+    AddReservationComponent,
+    CustomerDetailsComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

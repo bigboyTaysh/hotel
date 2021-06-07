@@ -56,10 +56,12 @@ interface Customer {
   birthdate: Date;
   phone: string;
   email: string;
-  address: {
-    street: string;
-    zipcode: string;
-    city: string;
-    country: string;
-  }
+  address: Address
+}
+
+interface Address {
+  street: string;
+  zipCode: string;
+  city: string;
+  country: string;
 }
