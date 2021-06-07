@@ -11,6 +11,7 @@ import { BehaviorSubject } from 'rxjs';
 export class CustomerDetailsComponent implements OnInit {
   public id: string;
   public customer: Customer;
+  public reservations: Reservation[];
   public message = new BehaviorSubject<string>(null);
 
   constructor(private route: ActivatedRoute, private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) { }
@@ -21,9 +22,14 @@ export class CustomerDetailsComponent implements OnInit {
   }
 
   async fetchCustomer() {
-    this.http.get<Customer>(this.baseUrl + 'api/customers/' + this.id).subscribe(result => {
-      this.customer = result;
+    this.http.get<Customer>(this.baseUrl + 'api/customers/' + this.id).subscribe(result1 => {
+      this.customer = result1;
     }, error => console.error(error));
+
+    this.http.get<Reservation[]>(this.baseUrl + 'api/reservations/customerReservations/' + this.id).subscribe(result2 => {
+      this.reservations = result2;
+    }, error => console.error(error));
+
   }
 
 
@@ -44,4 +50,21 @@ interface Address {
   zipCode: string;
   city: string;
   country: string;
+}
+
+interface Reservation {
+  id: string;
+  customerId: string;
+  startDate: string;
+  endDate: string;
+  price: string;
+  rooms: Room[];
+}
+
+interface Room {
+  id: string;
+  number: number;
+  numberOfSeats: number;
+  price: number;
+  description: string;
 }

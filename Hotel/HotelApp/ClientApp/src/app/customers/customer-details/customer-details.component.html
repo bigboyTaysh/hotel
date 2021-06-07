@@ -49,8 +49,38 @@
         <label for="login">Country</label>
         <label type="text" class="form-control">{{ customer.address.country }}</label>
       </div>
+
     </div>
   </div>
 </div>
+
 <br />
+<br />
+
+<h3> Reservations </h3>
+<p *ngIf="!reservations"><em>There are currently no reservations for this user.</em></p>
+<div *ngIf="reservations">
+  <table class='table table-striped' aria-labelledby="tableLabel">
+    <thead>
+      <tr>
+        <th>Reservation ID</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let reservation of reservations">
+        <td>{{ reservation.id }}</td>
+        <td>{{ reservation.startDate | date:'yyyy-MM-dd' }}</td>
+        <td>{{ reservation.endDate | date:'yyyy-MM-dd' }}</td>
+        <td>{{ reservation.price }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<br />
+<br />
+
 <a routerLink="/customers" class="btn btn-primary">Back</a>

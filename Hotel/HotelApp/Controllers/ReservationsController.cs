@@ -2,6 +2,7 @@
 using HotelApp.Service.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -48,7 +49,7 @@ namespace HotelApp.Controllers
         }
 
         // GET api/<ReservationsController>/5
-        [HttpGet("{id}")]
+        /*[HttpGet("{id}")]
         public async Task<ActionResult> Get(string id)
         {
             HttpResponseMessage response = await _client.GetAsync(_reservationsServiceUrl + id);
@@ -61,7 +62,7 @@ namespace HotelApp.Controllers
             {
                 return StatusCode((int)response.StatusCode);
             }
-        }
+        }*/
 
         [HttpPost]
         [Route("emptyRooms")]
@@ -72,6 +73,29 @@ namespace HotelApp.Controllers
 
             return Ok(response.Content.ReadAsStringAsync().Result);
         }
+
+
+        [HttpGet("customerReservations/{id}")]
+        //[Route("customerReservations")]
+        public async Task<ActionResult> GetCustomerReservations(string id)
+        {
+            Request.Headers.TryGetValue("Authorization", out var token);
+            if (StringValues.IsNullOrEmpty(token))
+                return Unauthorized();
+            _client.DefaultRequestHeaders.Add("Authorization", token.FirstOrDefault());
+
+            HttpResponseMessage response = await _client.GetAsync(_reservationsServiceUrl + "customerReservations/" + id);
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                return Ok(response.Content.ReadAsStringAsync().Result);
+            }
+            else
+            {
+                return StatusCode((int)response.StatusCode);
+            }
+        }
+
 
         // POST api/<ReservationsController>
         [HttpPost]

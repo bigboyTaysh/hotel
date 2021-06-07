@@ -51,5 +51,11 @@ namespace Reservations.Service.Services
             return newlist;
         }
 
+        public List<Reservation> GetCustomerReservations(string id)
+        {
+            var list = _reservations.Find(reservation => reservation.CustomerId == id).ToList();
+            return list;
+        }
+
     }
 }
