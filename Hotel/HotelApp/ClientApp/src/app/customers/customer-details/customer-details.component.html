@@ -1,4 +1,4 @@
-<h1>Add customer</h1>
+<h1>Customer Details</h1>
 
 <p>{{ message | async }}</p>
 
@@ -67,6 +67,7 @@
         <th>Start Date</th>
         <th>End Date</th>
         <th>Price</th>
+        <th>Room</th>
       </tr>
     </thead>
     <tbody>
@@ -75,6 +76,7 @@
         <td>{{ reservation.startDate | date:'yyyy-MM-dd' }}</td>
         <td>{{ reservation.endDate | date:'yyyy-MM-dd' }}</td>
         <td>{{ reservation.price }}</td>
+        <td> <p *ngFor="let room of reservation.rooms"> {{ room.number }} </p> </td>
       </tr>
     </tbody>
   </table>
@@ -84,3 +86,10 @@
 <br />
 
 <a routerLink="/customers" class="btn btn-primary">Back</a>
+
+
+<br />
+<br />
+
+<br />
+<br />
