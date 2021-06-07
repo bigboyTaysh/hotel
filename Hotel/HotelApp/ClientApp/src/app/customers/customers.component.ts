@@ -25,6 +25,18 @@ export class CustomersComponent {
     }, error => console.error(error));
   }
 
+  onSearch(form: NgForm) {
+    this.searchText = form.value.searchText;
+    this.getCustomerByName(this.searchText);
+  }
+
+  async getCustomerByName(searchText) {
+    console.log(searchText);
+    this.http.get<Customer[]>(this.baseUrl + 'api/customers/customerByName/' + searchText).subscribe(result => {
+      this.customers = result;
+    }, error => console.error(error));
+  }
+}
 
 interface Customer {
   id: string;

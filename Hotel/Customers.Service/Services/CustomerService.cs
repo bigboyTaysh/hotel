@@ -40,5 +40,12 @@ namespace Identity.Service.Services
         {
             return _customers.DeleteOne(customer => customer.Id == id);
         }
+
+        public List<Customer> GetCustomerByName(string name)
+        {
+            var list = _customers.Find(customer => customer.Firstname == name).ToList();
+            return list;
+        }
+
     }
 }
