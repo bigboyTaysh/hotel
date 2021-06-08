@@ -57,5 +57,46 @@ namespace Reservations.Service.Services
             return list;
         }
 
+        public List<Reservation> GetReservationByName(ReservationFilter reservationFilter)
+        {
+
+            /*if (reservationFilter.Id != "" && reservationFilter.Id.Length == 24 || reservationFilter.CustomerId != "" && reservationFilter.CustomerId.Length == 24)
+            {
+                return _reservations.Find(reservation => reservation.Id == reservationFilter.Id || reservation.CustomerId == reservationFilter.CustomerId).ToList();
+            }*/
+            if (reservationFilter.Id != "" && reservationFilter.Id.Length == 24)
+            {
+                return _reservations.Find(reservation => reservation.Id == reservationFilter.Id).ToList();
+            }
+            else if (reservationFilter.CustomerId != "" && reservationFilter.CustomerId.Length == 24)
+            {
+                return _reservations.Find(reservation => reservation.CustomerId == reservationFilter.CustomerId).ToList();
+            }
+            else if (!reservationFilter.StartDate.IsEmpty() && reservationFilter.EndDate.IsEmpty())
+            {
+                return _reservations.Find(reservation => reservation.StartDate > reservationFilter.StartDate).ToList();
+            }
+            else if (reservationFilter.StartDate.IsEmpty() && !reservationFilter.EndDate.IsEmpty())
+            {
+                return _reservations.Find(reservation => reservation.EndDate < reservationFilter.EndDate).ToList();
+            }
+            else if (!reservationFilter.StartDate.IsEmpty() && !reservationFilter.EndDate.IsEmpty())
+            {
+                return _reservations.Find(reservation => reservation.StartDate > reservationFilter.StartDate && reservation.EndDate < reservationFilter.EndDate).ToList();
+            }
+            else
+            {
+                return _reservations.Find(reservation => true).ToList();
+            }
+        }
+
+    }
+
+    public static class DateTimeUtil
+    {
+        public static bool IsEmpty(this DateTime dateTime)
+        {
+            return dateTime == default(DateTime);
+        }
     }
 }

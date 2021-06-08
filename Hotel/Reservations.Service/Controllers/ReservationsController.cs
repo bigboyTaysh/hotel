@@ -60,6 +60,13 @@ public class ReservationsController : ControllerBase
             return reservations;
         }
 
+        [HttpPost("reservationByName")]
+        public IEnumerable<Reservation> GetReservationByName(ReservationFilter reservation)
+        {
+            var reservations = service.GetReservationByName(reservation);
+            return reservations;
+        }
+
 
         // POST api/<ReservationsController>
         [HttpPost]

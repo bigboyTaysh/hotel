@@ -1,5 +1,40 @@
 <p *ngIf="!reservations"><em>Loading...</em></p>
 
+
+<h3>filter</h3>
+<form #form="ngForm">
+  <div class="form-row">
+    <div class="form-group col-md-3 mb-3">
+      <label for="search-text">Reservation ID</label>
+      <input type="text" class="form-control" (ngModelChange)="onSearch(form)" [ngModel]="filter.id" name="id" id="id"
+             placeholder="Enter Reservation ID" autofocus>
+      <small id="idHelp" class="form-text text-muted">Must be 24 digit hex string</small>
+    </div>
+    <div class="form-group col-md-3 mb-3">
+      <label for="search-text">Customer iD</label>
+      <input type="text" class="form-control" (ngModelChange)="onSearch(form)" [ngModel]="filter.customerId" name="customerId"
+             id="customerId" placeholder="Enter Customer ID" autofocus>
+      <small id="idHelp" class="form-text text-muted">Must be 24 digit hex string</small>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group col-md-3 mb-3">
+      <label for="search-text">Start Date</label>
+      <input type="date" class="form-control" (ngModelChange)="onSearch(form)" [ngModel]="filter.startDate" name="startDate"
+             id="startDate" autofocus>
+    </div>
+    <div class="form-group col-md-3 mb-3">
+      <label for="search-text">End Date</label>
+      <input type="date" class="form-control" (ngModelChange)="onSearch(form)" [ngModel]="filter.endDate" name="endDate"
+             id="endDate" autofocus>
+    </div>
+  </div>
+</form>
+
+
+
+<br />
 <table class='table table-striped' aria-labelledby="tableLabel" *ngIf="reservations">
   <thead>
     <tr>

@@ -1,5 +1,7 @@
+import { getLocaleDateFormat } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, Inject, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-reservations',
@@ -8,8 +10,16 @@ import { Component, Inject, OnInit } from '@angular/core';
 })
 export class ReservationsComponent{
   public reservations: Reservation[];
+  public filter: ReservationFilter;
 
   constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) {
+    this.filter = {
+      id: "",
+      customerId: "",
+      startDate: undefined,
+      endDate: undefined,
+    }
+
     http.get<Reservation[]>(baseUrl + 'api/reservations').subscribe(result => {
       this.reservations = result;
     }, error => console.error(error));
@@ -22,6 +32,22 @@ export class ReservationsComponent{
       this.reservations.splice(index, 1);
     }, error => console.error(error));
   }
+
+  onSearch(form: NgForm) {
+    this.filter.id = form.value.id;
+    this.filter.customerId = form.value.customerId;
+    this.filter.startDate = form.value.startDate;
+    this.filter.endDate = form.value.endDate;
+    this.getReservationByName();
+  }
+
+  async getReservationByName() {
+    this.http.post<Reservation[]>(this.baseUrl + 'api/reservations/reservationByName', this.filter).subscribe(result => {
+      this.reservations = result;
+    }, error => console.error(error));
+  }
+
+
 }
 
 interface Reservation {
@@ -39,4 +65,11 @@ interface Room {
   numberOfSeats: number;
   price: number;
   description: string;
+}
+
+interface ReservationFilter {
+  id: string;
+  customerId: string;
+  startDate: Date;
+  endDate: Date;
 }

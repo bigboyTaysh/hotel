@@ -97,6 +97,29 @@ namespace HotelApp.Controllers
         }
 
 
+        [HttpPost("reservationByName")]
+        public async Task<ActionResult> GetReservationByName(ReservationFilter reservation)
+        {
+            Request.Headers.TryGetValue("Authorization", out var token);
+            if (StringValues.IsNullOrEmpty(token))
+                return Unauthorized();
+            _client.DefaultRequestHeaders.Add("Authorization", token.FirstOrDefault());
+
+            string json = JsonConvert.SerializeObject(reservation);
+            StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+
+            HttpResponseMessage response = await _client.PostAsync(_reservationsServiceUrl + "reservationByName", httpContent);
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                return Ok(response.Content.ReadAsStringAsync().Result);
+            }
+            else
+            {
+                return StatusCode((int)response.StatusCode);
+            }
+        }
+
         // POST api/<ReservationsController>
         [HttpPost]
         public async Task<ActionResult> Post(Reservation reservation)
