@@ -41,11 +41,11 @@ namespace Reservations.Service.Services
         }
         public List<Room> GetEmptyRooms(List<Room> rooms, DateTime startDate, DateTime endDate)
         {
-            
-            var list = _reservations.Find(r => 
-                (r.StartDate > startDate && r.StartDate < endDate) ||
-                (r.EndDate > startDate && r.EndDate < endDate) || 
-                (r.StartDate < startDate && r.EndDate > endDate)).ToList().SelectMany(r => r.Rooms).Distinct().ToList();
+            var list = _reservations.Find(r =>
+                (startDate >= r.StartDate && endDate <= r.EndDate) || 
+                (endDate > r.StartDate && endDate <= r.EndDate) ||
+                (startDate >= r.StartDate && startDate < r.EndDate) ||
+                (startDate <= r.StartDate && endDate >= r.EndDate)).ToList().SelectMany(r => r.Rooms).Distinct().ToList();
 
             var newlist = rooms.Where(r => !list.Any(l => l.Id == r.Id)).ToList();
             return newlist;
