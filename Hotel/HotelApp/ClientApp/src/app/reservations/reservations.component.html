@@ -1,6 +1,5 @@
 <p *ngIf="!reservations"><em>Loading...</em></p>
 
-
 <h3>filter</h3>
 <form #form="ngForm">
   <div class="form-row">
@@ -32,8 +31,6 @@
   </div>
 </form>
 
-
-
 <br />
 <table class='table table-striped' aria-labelledby="tableLabel" *ngIf="reservations">
   <thead>
@@ -48,10 +45,10 @@
   <tbody>
     <tr *ngFor="let reservation of reservations">
       <td>{{ reservation.id }}</td>
-      <td>{{ reservation.customerId }}</td>
-      <td>{{ reservation.startDate | date:'yyyy-MM-dd' }}</td>
-      <td>{{ reservation.endDate | date:'yyyy-MM-dd' }}</td>
-      <td>{{ reservation.price }}</td>
+      <td [routerLink]="['/reservation/', reservation.id]">{{ reservation.customerId }}</td>
+      <td [routerLink]="['/reservation/', reservation.id]">{{ reservation.startDate | date:'yyyy-MM-dd' }}</td>
+      <td [routerLink]="['/reservation/', reservation.id]">{{ reservation.endDate | date:'yyyy-MM-dd' }}</td>
+      <td [routerLink]="['/reservation/', reservation.id]">{{ reservation.price | currency:'PLN':'code':'1.2-2':'fr' }}</td>
       <td><button class="btn btn-danger btn-sm" (click)="onDelete(reservation.id)">Delete</button></td>
     </tr>
   </tbody>

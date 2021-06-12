@@ -4,31 +4,36 @@ import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 
 @Component({
-  selector: 'app-customer-details',
-  templateUrl: './customer-details.component.html',
-  styleUrls: ['./customer-details.component.css']
+  selector: 'app-reservation-details',
+  templateUrl: './reservation-details.component.html',
+  styleUrls: ['./reservation-details.component.css'],
 })
-export class CustomerDetailsComponent implements OnInit {
+export class ReservationDetailsComponent implements OnInit {
   public id: string;
   public customer: Customer;
-  public reservations: Reservation[] = [];
+  public reservation: Reservation;
   public message = new BehaviorSubject<string>(null);
+  public customerIsExpanded = false;
 
   constructor(private route: ActivatedRoute, private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) { }
 
   ngOnInit() {
     this.id = this.route.snapshot.paramMap.get('id');
-    this.fetchCustomer();
+    this.fetchReservation();
   }
 
-  async fetchCustomer() {
-    this.http.get<Customer>(this.baseUrl + 'api/customers/' + this.id).subscribe(result => {
-      this.customer = result;
-    }, error => console.error(error));
+  fetchReservation () {
+    this.http.get<Reservation>(this.baseUrl + 'api/reservations/' + this.id).subscribe(result => {
+      this.reservation = result;
 
-    this.http.get<Reservation[]>(this.baseUrl + 'api/reservations/customerReservations/' + this.id).subscribe(result => {
-      this.reservations = result;
+      this.http.get<Customer>(this.baseUrl + 'api/customers/' + this.reservation.customerId).subscribe(result => {
+        this.customer = result;
+      }, error => console.error(error));
     }, error => console.error(error));
+  }
+
+  toggleCustomer () {
+    this.customerIsExpanded = !this.customerIsExpanded;
   }
 }
 

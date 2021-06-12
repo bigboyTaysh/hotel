@@ -23,7 +23,10 @@ import { AddRoomsComponent } from './rooms/add-rooms/add-rooms.component';
 import { ReservationsComponent } from './reservations/reservations.component';
 import { AddReservationComponent } from './reservations/add-reservation/add-reservation.component';
 import { CustomerDetailsComponent } from './customers/customer-details/customer-details.component';
-
+import { ReservationDetailsComponent } from './reservations/reservation-details/reservation-details.component';
+import { registerLocaleData } from '@angular/common';
+import fr from '@angular/common/locales/fr';
+registerLocaleData(fr)
 
 @NgModule({
   declarations: [
@@ -42,7 +45,8 @@ import { CustomerDetailsComponent } from './customers/customer-details/customer-
     AddRoomsComponent,
     ReservationsComponent,
     AddReservationComponent,
-    CustomerDetailsComponent
+    CustomerDetailsComponent,
+    ReservationDetailsComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -68,6 +72,7 @@ import { CustomerDetailsComponent } from './customers/customer-details/customer-
 
       { path: 'reservations', component: ReservationsComponent, canActivate: [AuthorizeGuard], data: { roles: ['Admin', 'Employee'] } },
       { path: 'reservations/add/:id', component: AddReservationComponent, canActivate: [AuthorizeGuard], data: { roles: ['Admin', 'Employee'] } },
+      { path: 'reservation/:id', component: ReservationDetailsComponent, canActivate: [AuthorizeGuard], data: { roles: ['Admin', 'Employee'] } },
     ])
   ],
   providers: [

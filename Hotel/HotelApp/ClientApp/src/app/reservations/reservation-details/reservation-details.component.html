@@ -1,0 +1,124 @@
+<h1>Reservation Details</h1>
+
+<p>{{ message | async }}</p>
+
+<div class="container">
+  <div *ngIf="customer && reservation">
+    <h3>Reservation</h3>
+
+    <div class="form-row">
+      <div class="form-group col-md-4 mb-3">
+        <label for="id">ID</label>
+        <label class="form-control">{{ reservation.id }}</label>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-4 mb-3">
+        <label for="startDate">Start date</label>
+        <label class="form-control">{{ reservation.startDate | date: "yyyy-MM-dd" }}</label>
+      </div>
+      <div class="form-group col-md-4 mb-3">
+        <label for="endDate">End date</label>
+        <label class="form-control">{{ reservation.endDate | date: "yyyy-MM-dd" }}</label>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-4 mb-3">
+        <label for="price">Price</label>
+        <label class="form-control">{{ reservation.price | currency:'PLN':'code':'1.2-2':'fr' }}</label>
+      </div>
+    </div>
+
+    <h3>Customer</h3>
+
+    <div class="form-row">
+      <div class="form-group col-md-4 mb-3">
+        <label>ID</label>
+        <label class="form-control" style="cursor: pointer;" [routerLink]="['/customer', customer.id]">{{ customer.id }}</label>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group col-md-8 mb-3">
+        <label>Firstname, lastname</label>
+        <label class="form-control">{{ customer.firstname + " " + customer.lastname }}</label>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group col-md-4 mb-3">
+        <label>Email</label>
+        <label class="form-control">{{ customer.email }}</label>
+      </div>
+
+      <div class="form-group col-md-4 mb-3">
+        <label>Phone</label>
+        <label class="form-control">{{ customer.phone }}</label>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <button type="button" class="btn btn-outline-primary" (click)="toggleCustomer()"
+        [attr.aria-expanded]="!customerIsExpanded" aria-controls="collapseExample">
+        Show customer details
+      </button>
+    </div>
+    <br>
+
+    <div class="collapse" [ngClass]="{ show: customerIsExpanded }">
+      <div class="form-row">
+        <div class="form-group col-md-4">
+          <label>Birthdate</label>
+          <label type="date" class="form-control">{{ customer.birthdate | date: "yyyy-MM-dd" }}</label>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-4 mb-3">
+          <label>Street</label>
+          <label type="text" class="form-control">{{ customer.address.street }}</label>
+        </div>
+        <div class="form-group col-md-4 mb-3">
+          <label>City</label>
+          <label type="text" class="form-control">{{ customer.address.city }}</label>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group col-md-4 mb-3">
+          <label for="login">Zipcode</label>
+          <label type="text" class="form-control">{{ customer.address.zipCode }}</label>
+        </div>
+        <div class="form-group col-md-4 mb-3">
+          <label for="login">Country</label>
+          <label type="text" class="form-control">{{ customer.address.country }}</label>
+        </div>
+      </div>
+    </div>
+
+    <h3>Rooms</h3>
+    <table class='table table-striped' aria-labelledby="tableLabel">
+      <thead>
+        <tr>
+          <th> ID </th>
+          <th> number </th>
+          <th> seats number </th>
+          <th> price </th>
+          <th> description </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let room of reservation.rooms" [routerLink]="['/rooms/edit/', room.id]">
+          <td>{{ room.id }}</td>
+          <td>{{ room.number }}</td>
+          <td>{{ room.numberOfSeats }}</td>
+          <td>{{ room.price | currency:'PLN':'code':'1.2-2':'fr' }}</td>
+          <td>
+            <span class="d-inline-block text-truncate" style="max-width: 150px;">
+              {{ room.description }}
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -49,9 +49,14 @@ namespace HotelApp.Controllers
         }
 
         // GET api/<ReservationsController>/5
-        /*[HttpGet("{id}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult> Get(string id)
         {
+            Request.Headers.TryGetValue("Authorization", out var token);
+            if (StringValues.IsNullOrEmpty(token))
+                return Unauthorized();
+            _client.DefaultRequestHeaders.Add("Authorization", token.FirstOrDefault());
+
             HttpResponseMessage response = await _client.GetAsync(_reservationsServiceUrl + id);
 
             if (response.StatusCode == HttpStatusCode.OK)
@@ -62,7 +67,7 @@ namespace HotelApp.Controllers
             {
                 return StatusCode((int)response.StatusCode);
             }
-        }*/
+        }
 
         [HttpPost]
         [Route("emptyRooms")]

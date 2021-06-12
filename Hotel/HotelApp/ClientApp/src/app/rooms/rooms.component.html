@@ -16,7 +16,7 @@
       <td>{{ room.id }}</td>
       <td>{{ room.number }}</td>
       <td>{{ room.numberOfSeats }}</td>
-      <td>{{ room.price }}</td>
+      <td>{{ room.price | currency:'PLN':'code':'1.2-2':'fr' }}</td>
       <td>
         <span class="d-inline-block text-truncate" style="max-width: 150px;">
           {{ room.description }}
