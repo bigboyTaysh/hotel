@@ -43,7 +43,7 @@ export class AddCustomerComponent implements OnInit {
     console.log(customerInput);
     this.http.post<Customer>(this.baseUrl + 'api/customers', customerInput).subscribe(result => {
       this.customer = result;
-      this.message.next('Customer "' + this.customer.firstname + '" was added successfully.');
+      this.message.next('Customer "' + this.customer.firstname + " " + this.customer.lastname + '" was added successfully.');
       form.reset();
     }, error => this.message.next(error.error));
   }
@@ -56,10 +56,12 @@ interface Customer {
   birthdate: Date;
   phone: string;
   email: string;
-  address: {
-    street: string;
-    zipcode: string;
-    city: string;
-    country: string;
-  }
+  address: Address
+}
+
+interface Address {
+  street: string;
+  zipCode: string;
+  city: string;
+  country: string;
 }

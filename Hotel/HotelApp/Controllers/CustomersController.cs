@@ -71,6 +71,33 @@ namespace HotelApp.Controllers
             }
         }
 
+
+        [HttpPost("customerByName")]
+        //[Route("customerReservations")]
+        public async Task<ActionResult> GetCustomerByName(CustomerFilter customer)
+        {
+            Request.Headers.TryGetValue("Authorization", out var token);
+            if (StringValues.IsNullOrEmpty(token))
+                return Unauthorized();
+            _client.DefaultRequestHeaders.Add("Authorization", token.FirstOrDefault());
+
+            string json = JsonConvert.SerializeObject(customer);
+            StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+
+            HttpResponseMessage response = await _client.PostAsync(_customersServiceUrl + "customerByName", httpContent);
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                return Ok(response.Content.ReadAsStringAsync().Result);
+            }
+            else
+            {
+                return StatusCode((int)response.StatusCode);
+            }
+        }
+
+
+
         // POST api/<CustomersController>
         [HttpPost]
         public async Task<ActionResult> Post(Customer customer)

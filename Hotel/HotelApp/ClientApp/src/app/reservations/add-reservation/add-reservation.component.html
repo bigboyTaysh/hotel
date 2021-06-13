@@ -1,66 +1,88 @@
-<p>add-reservation works!</p>
-<h1>Add user</h1>
-
+<h1>Add reservation</h1>
 <p>{{ message | async }}</p>
 
-<div class="form-group">
-    <label for="startDate">Start date</label>
-    <label class="form-control" id="startDate">{{ customer.firstname + " " +  customer.lastname }}</label>
+<div class="form-row">
+  <div class="form-group col-md-4 mb-3">
+    <label for="startDate">Reservation for</label>
+    <label class="form-control">{{ customer.firstname + " " + customer.lastname }}</label>
+  </div>
+
+  <div class="form-group col-md-4 mb-3">
+    <label for="startDate">IDr</label>
+    <label class="form-control">{{ customer.id }}</label>
+  </div>
 </div>
 
 <form #form="ngForm">
-    <div class="form-group">
+  <div class="form-row">
+    <div class="form-group col-md-4 mb-3">
       <label for="startDate">Start date</label>
-      <input type="date" class="form-control" [ngModel]="startDate" (ngModelChange)="onChangeStartDate($event)" name="startDate" id="startDate">
+      <input type="date" class="form-control" [ngModel]="startDate" (ngModelChange)="onChangeStartDate($event)"
+        name="startDate" id="startDate">
     </div>
-    <div class="form-group">
-        <label for="endDate">End date</label>
-        <input type="date" class="form-control" [ngModel]="endDate" (ngModelChange)="onChangeEndDate($event)" name="endDate" id="endDate">
-      </div>
+    <div class="form-group col-md-4 mb-3">
+      <label for="endDate">End date</label>
+      <input type="date" class="form-control" [ngModel]="endDate" (ngModelChange)="onChangeEndDate($event)"
+        name="endDate" id="endDate">
+    </div>
+  </div>
+  <br>
 
-    <p *ngIf="!emptyRooms"><em>Loading...</em></p>
+  <h3> Free rooms </h3>
+  <p *ngIf="!emptyRooms"><em>There are currently no rooms available</em></p>
+  <div *ngIf="emptyRooms">
+    <table class='table table-striped' aria-labelledby="tableLabel">
+      <thead>
+        <tr>
+          <th>Room number</th>
+          <th>Seats number</th>
+          <th>Price for day</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let room of emptyRooms">
+          <td>{{ room.number }}</td>
+          <td>{{ room.numberOfSeats }}</td>
+          <td>{{ room.price }}</td>
+          <td><button class="btn btn-primary btn-sm" (click)="onAdd(room.id)">Add</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <br />
 
-    <table class='table table-striped' aria-labelledby="tableLabel" *ngIf="emptyRooms">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>login</th>
-            <th>role</th>
-            <th></th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let room of emptyRooms">
-            <td>{{ room.number }}</td>
-            <td>{{ room.numberOfSeats }}</td>
-            <td>{{ room.price }}</td>
-            <td><button class="btn btn-primary" (click)="onAdd(room.id)">Add</button></td>
-          </tr>
-        </tbody>
-      </table>
+  <h3>Selected rooms:</h3>
+  <p *ngIf="selectedRooms.length <= 0"><em>Empty</em></p>
+  <div *ngIf="selectedRooms.length > 0">
+    <table class='table table-striped' aria-labelledby="tableLabel">
+      <thead>
+        <tr>
+          <th>Room number</th>
+          <th>Seats number</th>
+          <th>Price for day</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let room of selectedRooms">
+          <td>{{ room.number }}</td>
+          <td>{{ room.numberOfSeats }}</td>
+          <td>{{ room.price }}</td>
+          <td><button class="btn btn-primary btn-sm" (click)="onRemove(room.id)">Remove</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-
-      <p *ngIf="selectedRooms.length <= 0"><em>Empty</em></p>
-
-    <table class='table table-striped' aria-labelledby="tableLabel" *ngIf="selectedRooms.length > 0">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>login</th>
-            <th>role</th>
-            <th></th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let room of selectedRooms">
-            <td>{{ room.number }}</td>
-            <td>{{ room.numberOfSeats }}</td>
-            <td>{{ room.price }}</td>
-            <td><button class="btn btn-primary" (click)="onRemove(room.id)">Remove</button></td>
-          </tr>
-        </tbody>
-      </table>
-    <button class="btn btn-primary" (click)="addReservation()">Add</button>
+  <br />
+  <br />
+  
+  <div class="form-group">
+    <button class="btn btn-success btn-lg" (click)="addReservation()"> Add reservation</button>
+  </div>
 </form>
+<a routerLink="/customers" class="btn btn-primary">Back</a>
+<br />
+<br />
+  

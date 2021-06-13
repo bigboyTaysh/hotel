@@ -50,6 +50,24 @@ public class ReservationsController : ControllerBase
             return service.GetEmptyRooms(request.Rooms, request.StartDate, request.EndDate);
         }
 
+
+
+        [HttpGet("customerReservations/{id}")]
+        //[Route("customerReservations")]
+        public IEnumerable<Reservation> GetCustomerReservations(string id)
+        {
+            var reservations = service.GetCustomerReservations(id);
+            return reservations;
+        }
+
+        [HttpPost("reservationByName")]
+        public IEnumerable<Reservation> GetReservationByName(ReservationFilter reservation)
+        {
+            var reservations = service.GetReservationByName(reservation);
+            return reservations;
+        }
+
+
         // POST api/<ReservationsController>
         [HttpPost]
         public ActionResult Post(Reservation reservation)

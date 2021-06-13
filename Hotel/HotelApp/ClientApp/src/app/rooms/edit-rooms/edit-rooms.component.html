@@ -1,6 +1,6 @@
 <p>{{ message | async }}</p>
 
-<form #form="ngForm">
+<form #form="ngForm" class="col-md-4 mb-3">
 
   <div class="form-group">
     <label for="id">Id</label>
@@ -8,23 +8,26 @@
   </div>
 
   <div class="form-group">
-    <label for="login">Number</label>
+    <label for="number">Number</label>
     <input type="number" class="form-control" [ngModel]="room.number" name="number" id="number" placeholder="enter number">
   </div>
 
   <div class="form-group">
-    <label for="login">Number of Seat</label>
+    <label for="numberOfSeats">Number of Seat</label>
     <input type="number" class="form-control" [ngModel]="room.numberOfSeats" name="numberOfSeats" id="numberOfSeats" placeholder="enter seats number">
   </div>
 
   <div class="form-group">
-    <label for="login">Price</label>
-    <input type="number" class="form-control" [ngModel]="room.price" name="price" id="price" placeholder="enter price">
+    <label for="price">Price</label>
+    <div class="form-inline">
+      <input type="number" class="form-control" [ngModel]="room.price" name="price" id="price" placeholder="enter price">
+      <label class="align-middle ml-3">PLN</label>
+    </div>
   </div>
 
   <div class="form-group">
-    <label for="login">Description</label>
-    <input type="text" class="form-control" [ngModel]="room.description" name="description" id="description" placeholder="enter description">
+    <label for="description">Description</label>
+    <textarea class="form-control" [ngModel]="room.description" name="description" id="description" placeholder="enter description"></textarea>
   </div>
 
   <button class="btn btn-primary" (click)="onSubmit(form)">Edit</button>

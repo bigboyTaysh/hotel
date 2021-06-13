@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Inject, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { User } from 'src/api-authorization/authorize.service';
 
@@ -11,8 +11,8 @@ import { User } from 'src/api-authorization/authorize.service';
   styleUrls: ['./add-reservation.component.css']
 })
 export class AddReservationComponent implements OnInit {
-  public rooms: Room[];
-  public emptyRooms: Room[];
+  public rooms: Room[] = [];
+  public emptyRooms: Room[] = [];
   public startDate: string;
   public endDate: string;
   public selectedRooms: Room[] = [];
@@ -21,7 +21,7 @@ export class AddReservationComponent implements OnInit {
   public customer: Customer;
 
 
-  constructor(private route: ActivatedRoute, private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) {
+  constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) {
     let startDate = new Date();
     startDate.setUTCHours(0,0,0,0);
     this.startDate = startDate.toISOString().split('T')[0];
@@ -104,6 +104,16 @@ export class AddReservationComponent implements OnInit {
   }
 
   async addReservation() {
+    if(new Date(this.startDate).getTime() === new Date(this.endDate).getTime()){
+      this.message.next("Start date and end date can't be the same");
+      return;
+    }
+
+    if(this.selectedRooms.length < 1 ){
+      this.message.next("Select the rooms to book");
+      return;
+    }
+
     const reservation = {
       id: '',
       customerId: this.customer.id,
@@ -113,7 +123,9 @@ export class AddReservationComponent implements OnInit {
       rooms: this.selectedRooms
     }
 
-    this.http.post(this.baseUrl + 'api/reservations', reservation).subscribe(result => {
+    this.http.post<Reservation>(this.baseUrl + 'api/reservations', reservation).subscribe(result => {
+      let reservation = result;
+      this.router.navigate(['reservation/' + reservation.id]);
     }, error => this.message.next(error.error));
   }
 
@@ -148,4 +160,12 @@ interface Address {
   zipcode: string;
   city: string;
   country: string;
+}
+
+interface Reservation {
+  id: string;
+  customerId: string;
+  startDate: string;
+  endDate: string;
+  price: string;
 }

@@ -16,10 +16,14 @@
       <td>{{ room.id }}</td>
       <td>{{ room.number }}</td>
       <td>{{ room.numberOfSeats }}</td>
-      <td>{{ room.price }}</td>
-      <td>{{ room.description }}</td>
-      <td><a [routerLink]="['edit', room.id]">Edit</a></td>
-      <td><button class="btn btn-primary" (click)="onDelete(room.id)">Delete</button></td>
+      <td>{{ room.price | currency:'PLN':'code':'1.2-2':'fr' }}</td>
+      <td>
+        <span class="d-inline-block text-truncate" style="max-width: 150px;">
+          {{ room.description }}
+        </span>
+      </td>
+      <td><a [routerLink]="['edit', room.id]" class="btn btn-primary btn-sm">Edit</a></td>
+      <td><button class="btn btn-danger btn-sm" (click)="onDelete(room.id)">Delete</button></td>
     </tr>
   </tbody>
 </table>

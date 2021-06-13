@@ -10,6 +10,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Reservations.Service.DAL;
 using Reservations.Service.Services;
+using Steeltoe.Discovery.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +37,9 @@ namespace Reservations.Service
                 sp.GetRequiredService<IOptions<DatabaseSettings>>().Value);
 
             services.AddSingleton<ReservationService>();
+
+            services.AddDiscoveryClient(Configuration);
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -52,6 +56,8 @@ namespace Reservations.Service
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Reservations.Service v1"));
             }
+
+            app.UseDiscoveryClient();
 
             app.UseHttpsRedirection();
 

@@ -7,7 +7,7 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace Identity.Service.Controllers
+namespace Reservations.Service.Controllers
 {
     [ApiController]
     [Produces("application/json")]
@@ -42,9 +42,9 @@ namespace Identity.Service.Controllers
 
         public Info()
         {
-            ServiceName = "Identity.Service";
-            ServiceDescription = "This is Identity.Service.";
-            ServiceAddress = "https://localhost:44393/swagger/index.html";
+            ServiceName = "Reservations.Service";
+            ServiceDescription = "This is Reservations.Service.";
+            ServiceAddress = "https://localhost:44361/swagger/index.html";
         }
     }
 }

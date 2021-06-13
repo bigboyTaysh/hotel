@@ -42,6 +42,15 @@ namespace Customers.Service.Controllers
             return Ok(customer);
         }
 
+        [HttpPost("customerByName")]
+        //[Route("customerReservations")]
+        public IEnumerable<Customer> GetCustomerByName(CustomerFilter customer)
+        {
+            var customers = service.GetCustomerByName(customer);
+            return customers;
+        }
+
+
         // POST api/<CustomersController>
         [HttpPost]
         public ActionResult Post(Customer customer)

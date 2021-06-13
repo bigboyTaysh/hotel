@@ -1,5 +1,37 @@
 <p *ngIf="!reservations"><em>Loading...</em></p>
 
+<h3>filter</h3>
+<form #form="ngForm">
+  <div class="form-row">
+    <div class="form-group col-md-3 mb-3">
+      <label for="search-text">Reservation ID</label>
+      <input type="text" class="form-control" (ngModelChange)="onSearch(form)" [ngModel]="filter.id" name="id" id="id"
+             placeholder="Enter Reservation ID" autofocus>
+      <small id="idHelp" class="form-text text-muted">Must be 24 digit hex string</small>
+    </div>
+    <div class="form-group col-md-3 mb-3">
+      <label for="search-text">Customer iD</label>
+      <input type="text" class="form-control" (ngModelChange)="onSearch(form)" [ngModel]="filter.customerId" name="customerId"
+             id="customerId" placeholder="Enter Customer ID" autofocus>
+      <small id="idHelp" class="form-text text-muted">Must be 24 digit hex string</small>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group col-md-3 mb-3">
+      <label for="search-text">Start Date</label>
+      <input type="date" class="form-control" (ngModelChange)="onSearch(form)" [ngModel]="filter.startDate" name="startDate"
+             id="startDate" autofocus>
+    </div>
+    <div class="form-group col-md-3 mb-3">
+      <label for="search-text">End Date</label>
+      <input type="date" class="form-control" (ngModelChange)="onSearch(form)" [ngModel]="filter.endDate" name="endDate"
+             id="endDate" autofocus>
+    </div>
+  </div>
+</form>
+
+<br />
 <table class='table table-striped' aria-labelledby="tableLabel" *ngIf="reservations">
   <thead>
     <tr>
@@ -13,11 +45,12 @@
   <tbody>
     <tr *ngFor="let reservation of reservations">
       <td>{{ reservation.id }}</td>
-      <td>{{ reservation.customerId }}</td>
-      <td>{{ reservation.startDate }}</td>
-      <td>{{ reservation.endDate }}</td>
-      <td>{{ reservation.price }}</td>
-      <td><button class="btn btn-primary" (click)="onDelete(reservation.id)">Delete</button></td>
+      <td [routerLink]="['/reservation/', reservation.id]">{{ reservation.customerId }}</td>
+      <td [routerLink]="['/reservation/', reservation.id]">{{ reservation.startDate | date:'yyyy-MM-dd' }}</td>
+      <td [routerLink]="['/reservation/', reservation.id]">{{ reservation.endDate | date:'yyyy-MM-dd' }}</td>
+      <td [routerLink]="['/reservation/', reservation.id]">{{ reservation.price | currency:'PLN':'code':'1.2-2':'fr' }}</td>
+      <td><button class="btn btn-danger btn-sm" (click)="onDelete(reservation.id)">Delete</button></td>
     </tr>
   </tbody>
 </table>
+

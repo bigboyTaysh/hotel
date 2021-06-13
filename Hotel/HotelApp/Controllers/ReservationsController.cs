@@ -2,6 +2,7 @@
 using HotelApp.Service.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -51,6 +52,11 @@ namespace HotelApp.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult> Get(string id)
         {
+            Request.Headers.TryGetValue("Authorization", out var token);
+            if (StringValues.IsNullOrEmpty(token))
+                return Unauthorized();
+            _client.DefaultRequestHeaders.Add("Authorization", token.FirstOrDefault());
+
             HttpResponseMessage response = await _client.GetAsync(_reservationsServiceUrl + id);
 
             if (response.StatusCode == HttpStatusCode.OK)
@@ -71,6 +77,52 @@ namespace HotelApp.Controllers
             HttpResponseMessage response = await _client.PostAsync(_reservationsServiceUrl + "emptyRooms", httpContent);
 
             return Ok(response.Content.ReadAsStringAsync().Result);
+        }
+
+
+        [HttpGet("customerReservations/{id}")]
+        //[Route("customerReservations")]
+        public async Task<ActionResult> GetCustomerReservations(string id)
+        {
+            Request.Headers.TryGetValue("Authorization", out var token);
+            if (StringValues.IsNullOrEmpty(token))
+                return Unauthorized();
+            _client.DefaultRequestHeaders.Add("Authorization", token.FirstOrDefault());
+
+            HttpResponseMessage response = await _client.GetAsync(_reservationsServiceUrl + "customerReservations/" + id);
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                return Ok(response.Content.ReadAsStringAsync().Result);
+            }
+            else
+            {
+                return StatusCode((int)response.StatusCode);
+            }
+        }
+
+
+        [HttpPost("reservationByName")]
+        public async Task<ActionResult> GetReservationByName(ReservationFilter reservation)
+        {
+            Request.Headers.TryGetValue("Authorization", out var token);
+            if (StringValues.IsNullOrEmpty(token))
+                return Unauthorized();
+            _client.DefaultRequestHeaders.Add("Authorization", token.FirstOrDefault());
+
+            string json = JsonConvert.SerializeObject(reservation);
+            StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+
+            HttpResponseMessage response = await _client.PostAsync(_reservationsServiceUrl + "reservationByName", httpContent);
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                return Ok(response.Content.ReadAsStringAsync().Result);
+            }
+            else
+            {
+                return StatusCode((int)response.StatusCode);
+            }
         }
 
         // POST api/<ReservationsController>

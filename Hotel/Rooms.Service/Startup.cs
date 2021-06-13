@@ -13,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Rooms.Service.DAL;
 using Rooms.Service.Services;
+using Steeltoe.Discovery.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,6 +60,8 @@ namespace Rooms.Service
                 };
             });
 
+            services.AddDiscoveryClient(Configuration);
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -75,6 +78,8 @@ namespace Rooms.Service
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Rooms.Service v1"));
             }
+
+            app.UseDiscoveryClient();
 
             app.UseHttpsRedirection();
 
