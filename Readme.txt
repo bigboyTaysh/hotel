@@ -1,3 +1,5 @@
+do projektu wymagana jest baza danych MongoDb https://www.mongodb.com/try/download/community
+
 w aktualnym folderze, w którym znajduje się plik Readme.txt
 należy uruchomić plik start.bat
 
