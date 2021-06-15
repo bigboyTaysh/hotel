@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, Inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
@@ -14,7 +15,7 @@ export class CustomerDetailsComponent implements OnInit {
   public reservations: Reservation[] = [];
   public message = new BehaviorSubject<string>(null);
 
-  constructor(private route: ActivatedRoute, private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) { }
+  constructor(private route: ActivatedRoute, private http: HttpClient, @Inject('BASE_URL') private baseUrl: string, private _location: Location) { }
 
   ngOnInit() {
     this.id = this.route.snapshot.paramMap.get('id');
@@ -29,6 +30,10 @@ export class CustomerDetailsComponent implements OnInit {
     this.http.get<Reservation[]>(this.baseUrl + 'api/reservations/customerReservations/' + this.id).subscribe(result => {
       this.reservations = result;
     }, error => console.error(error));
+  }
+
+  back() {
+    this._location.back();
   }
 }
 
