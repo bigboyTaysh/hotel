@@ -2,7 +2,7 @@
 
 <p>{{ message | async }}</p>
 
-<form #form="ngForm">
+<form #form="ngForm" class="col-md-4 mb-3">
     <div class="form-group">
         <label for="login">Login</label>
         <input type="text" class="form-control" ngModel name="login" id="login" aria-describedby="loginHelp"
@@ -21,3 +21,5 @@
       </div>
     <button class="btn btn-primary" (click)="onSubmit(form)">Add</button>
 </form>
+<br>
+<a (click)="back()" class="btn btn-primary">Back</a>

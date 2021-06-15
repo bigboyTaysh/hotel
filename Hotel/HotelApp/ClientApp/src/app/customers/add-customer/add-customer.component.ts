@@ -35,8 +35,7 @@ export class AddCustomerComponent implements OnInit {
         country: form.value.country
       }
     }
-
-
+    
     this.addCustomer(customer, form);
   }
 

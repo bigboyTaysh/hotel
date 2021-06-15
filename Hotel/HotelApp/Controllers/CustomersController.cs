@@ -123,13 +123,13 @@ namespace HotelApp.Controllers
         }
 
         // PUT api/<CustomersController>/5
-        [HttpPut("{id}")]
-        public async Task<ActionResult> Put(string id, Customer customer)
+        [HttpPut]
+        public async Task<ActionResult> Put(Customer customer)
         {
             string json = JsonConvert.SerializeObject(customer);
             StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
 
-            HttpResponseMessage response = await _client.PutAsync(_customersServiceUrl + id, httpContent);
+            HttpResponseMessage response = await _client.PutAsync(_customersServiceUrl, httpContent);
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
