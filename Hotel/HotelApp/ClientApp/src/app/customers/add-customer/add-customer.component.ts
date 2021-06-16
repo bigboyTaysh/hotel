@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, Inject, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
@@ -14,7 +15,7 @@ export class AddCustomerComponent implements OnInit {
   baseUrl: string;
   public message = new BehaviorSubject<string>(null);
 
-  constructor(http: HttpClient, @Inject('BASE_URL') baseUrl: string) { this.http = http; this.baseUrl = baseUrl; }
+  constructor(http: HttpClient, @Inject('BASE_URL') baseUrl: string, private _location: Location) { this.http = http; this.baseUrl = baseUrl; }
 
   ngOnInit() {
   }
@@ -34,8 +35,7 @@ export class AddCustomerComponent implements OnInit {
         country: form.value.country
       }
     }
-
-
+    
     this.addCustomer(customer, form);
   }
 
@@ -46,6 +46,10 @@ export class AddCustomerComponent implements OnInit {
       this.message.next('Customer "' + this.customer.firstname + " " + this.customer.lastname + '" was added successfully.');
       form.reset();
     }, error => this.message.next(error.error));
+  }
+
+  back(){
+    this._location.back();
   }
 }
 

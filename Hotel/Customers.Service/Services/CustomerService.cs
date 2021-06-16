@@ -33,9 +33,9 @@ namespace Identity.Service.Services
             return customer;
         }
 
-        public ReplaceOneResult Update(string id, Customer customerIn) 
+        public ReplaceOneResult Update(Customer customerIn) 
         {
-            return _customers.ReplaceOne(customer => customer.Id == id, customerIn);
+            return _customers.ReplaceOne(customer => customer.Id == customerIn.Id, customerIn);
         }
 
         public DeleteResult Remove(string id)

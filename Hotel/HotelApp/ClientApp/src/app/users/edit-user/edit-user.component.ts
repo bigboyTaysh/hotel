@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, Inject, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
@@ -15,7 +16,12 @@ export class EditUserComponent implements OnInit {
   id: string;
 
 
-  constructor(private route: ActivatedRoute, private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) { this.http = http; this.baseUrl = baseUrl; }
+  constructor(private route: ActivatedRoute,
+    private http: HttpClient,
+    @Inject('BASE_URL') private baseUrl: string,
+    private _location: Location) {
+    this.http = http; this.baseUrl = baseUrl;
+  }
 
 
   ngOnInit() {
@@ -48,11 +54,15 @@ export class EditUserComponent implements OnInit {
     }, error => this.message.next(error.error));
   }
 
-  async fetchUser(){
+  async fetchUser() {
     this.http.get<User>(this.baseUrl + 'api/users/' + this.id).subscribe(result => {
       this.user = result;
       this.user.password = "";
     }, error => console.error(error));
+  }
+
+  back() {
+    this._location.back();
   }
 }
 

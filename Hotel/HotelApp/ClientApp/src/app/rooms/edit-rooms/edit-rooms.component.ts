@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, Inject, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
@@ -16,7 +17,10 @@ export class EditRoomsComponent implements OnInit {
   id: string;
 
 
-  constructor(private route: ActivatedRoute, private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) { }
+  constructor(private route: ActivatedRoute,
+    private http: HttpClient,
+    @Inject('BASE_URL') private baseUrl: string,
+    private _location: Location) { }
 
 
   ngOnInit() {
@@ -54,6 +58,10 @@ export class EditRoomsComponent implements OnInit {
     this.http.get<Room>(this.baseUrl + 'api/rooms/' + this.id).subscribe(result => {
       this.room = result;
     }, error => console.error(error));
+  }
+  
+  back() {
+    this._location.back();
   }
 }
 

@@ -61,10 +61,10 @@ namespace Customers.Service.Controllers
         }
 
         // PUT api/<CustomersController>/5
-        [HttpPut("{id}")]
-        public ActionResult Put(string id, Customer customer)
+        [HttpPut]
+        public ActionResult Put(Customer customer)
         {
-            var result = service.Update(id, customer);
+            var result = service.Update(customer);
 
             if(result.MatchedCount == 0)
             {

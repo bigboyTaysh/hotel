@@ -1,1 +1,56 @@
-<p>edit-customer works!</p>
+<h1>Edit customer</h1>
+
+<p>{{ message | async }}</p>
+
+<form #form="ngForm">
+
+  <div class="form-row">
+    <div class="form-group col-md-4 mb-3">
+      <label for="login">Firstname</label>
+      <input type="text" class="form-control" [ngModel]="customer.firstname" name="firstname" id="firstname" placeholder="enter firstname">
+    </div>
+
+    <div class="form-group col-md-4 mb-3">
+      <label for="login">Lastname</label>
+      <input type="text" class="form-control" [ngModel]="customer.lastname" name="lastname" id="lastname" placeholder="enter lastname">
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group col-md-4 mb-3">
+      <label for="login">Email</label>
+      <input type="text" class="form-control" [ngModel]="customer.email" name="email" id="email" placeholder="enter email">
+    </div>
+
+    <div class="form-group col-md-4 mb-3">
+      <label for="price">Phone</label>
+      <input type="text" class="form-control" [ngModel]="customer.phone" name="phone" id="phone" placeholder="enter phone number">
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group col-md-4 mb-3">
+      <label for="login">Street</label>
+      <input type="text" class="form-control" [ngModel]="customer.address.street" name="street" id="street" placeholder="enter street">
+    </div>
+    <div class="form-group col-md-4 mb-3">
+      <label for="login">City</label>
+      <input type="text" class="form-control" [ngModel]="customer.address.city" name="city" id="city" placeholder="enter city">
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group col-md-4 mb-3">
+      <label for="login">Zipcode</label>
+      <input type="text" class="form-control" [ngModel]="customer.address.zipCode" name="zipcode" id="zipcode" placeholder="enter zipcode">
+    </div>
+    <div class="form-group col-md-4 mb-3">
+      <label for="login">Country</label>
+      <input type="text" class="form-control" [ngModel]="customer.address.country" name="country" id="country" placeholder="enter country">
+    </div>
+  </div>
+
+  <button class="btn btn-primary" (click)="onSubmit(form)">Edit</button>
+</form>
+<br />
+<a (click)="back()" class="btn btn-primary">Back</a>
