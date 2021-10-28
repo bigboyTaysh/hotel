@@ -18,14 +18,14 @@ Architecture is based on microservices. It contains single api interfaces as a s
 * [ClientApp](https://github.com/bigboyTaysh/hotel/tree/master/Hotel/HotelApp/ClientApp) is an client spa web app. 
 
 ## Technology stack
-* ASP.NET Core Web API for every services and intermediary api
-* MongoDB as databases in every services
-* Angular for client app
-* JWT
+* _**ASP.NET Core Web API**_ for every services and intermediary api
+* _**MongoDB**_ as databases in every services
+* _**Angular**_ for client app
+* _**JWT**_
 
 ## Guide
 For use this application is requred to have installed Angular, .NET and MongoDB  
-To run the entire application with all services, you can run the start.bat file.  
+To run the entire application with all services, you can run the `start.bat` file.  
 After that: 
 * on https://localhost:44331/ is running client application.  
 * on http://localhost:8761/ there is eureka server where information about registered services will appear.  
