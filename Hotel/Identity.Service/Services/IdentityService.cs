@@ -48,7 +48,7 @@ namespace Identity.Service.Services
                 return null;
 
             var refreshToken = GetToken(user, DateTime.UtcNow.AddDays(4));
-            var accessToken = GetToken(user, DateTime.UtcNow.AddMinutes(1));
+            var accessToken = GetToken(user, DateTime.UtcNow.AddSeconds(10));
 
             user.RefreshToken = refreshToken;
             user.Password = null;
@@ -66,6 +66,37 @@ namespace Identity.Service.Services
             user.RefreshToken = null;
             user.Password = null;
             _userService.Update(user);
+        }
+
+        public Token GetNewToken(string token)
+        {
+            var replacedToken = token.Replace("Bearer ", string.Empty);
+            var handler = new JwtSecurityTokenHandler();
+            var securityToken = handler.ReadJwtToken(replacedToken);
+            var claims = new List<string> { "unique_name", "role" };
+
+            var cos = DateTime.Now;
+            var cos2 = securityToken.ValidTo;
+
+            if (securityToken.ValidTo < DateTime.Now ||
+                !claims.All(claim => securityToken.Claims.Any(c => c.Type == claim)))
+            {
+                return null;
+            }
+
+            var user = _userService.GetUserByToken(replacedToken);
+
+            if (user == null)
+                return null;
+
+            var refreshToken = GetToken(user, DateTime.UtcNow.AddDays(4));
+            var accessToken = GetToken(user, DateTime.UtcNow.AddSeconds(10));
+
+            user.RefreshToken = refreshToken;
+            user.Password = null;
+            _userService.Update(user);
+
+            return new Token() { RefreshToken = refreshToken, AccessToken = accessToken };
         }
 
         private string GetToken(User user, DateTime expires)

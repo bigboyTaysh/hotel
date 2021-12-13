@@ -86,5 +86,28 @@ namespace HotelApp.Controllers
                 return Unauthorized(ModelState);
             }
         }
+
+        [Route("token")]
+        [HttpPost]
+        public async Task<IActionResult> OnPostTokenAsync()
+        {
+            Request.Headers.TryGetValue("Authorization", out var token);
+            if (string.IsNullOrEmpty(token))
+                return Unauthorized();
+            _client.DefaultRequestHeaders.Add("Authorization", token.FirstOrDefault());
+
+            HttpResponseMessage response = await _client.PostAsync(_identityServiceUrl + "token/", null);
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var resp = response.Content.ReadAsAsync<Token>().Result;
+                return Ok(resp);
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Invalid get a token attempt.");
+                return Unauthorized(ModelState);
+            }
+        }
     }
 }
