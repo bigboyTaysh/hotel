@@ -30,6 +30,11 @@ export enum AuthenticationResultStatus {
   Fail
 }
 
+export interface Token {
+  access_token: string;
+  refresh_token: string;
+}
+
 export interface UserSettings {
   name: string,
   token: string;
@@ -120,12 +125,13 @@ export class AuthorizeService {
     }
 
     const token = await response.json();
-    const tokenInfo = this.getDecodedAccessToken(token);
+    const tokenInfo = this.getDecodedAccessToken(token.refreshToken);
 
     const settings: any = {
       name: tokenInfo.unique_name,
       role: tokenInfo.role,
-      access_token: token,
+      refresh_token: token.refreshToken,
+      access_token: token.accessToken,
       token_type: 'Bearer',
     };
     
@@ -163,6 +169,7 @@ export class AuthorizeService {
   private setUserToStorage(user: User) {
     localStorage.setItem("name", user.name);
     localStorage.setItem("role", user.role);
+    localStorage.setItem("refresh_token", user.refresh_token);
     localStorage.setItem("access_token", user.access_token);
     localStorage.setItem("token_type", user.token_type);
   }
@@ -185,6 +192,7 @@ export class AuthorizeService {
     const settings: any = {
       name: localStorage.getItem('name'),
       role: localStorage.getItem('role'),
+      refresh_token: localStorage.getItem('refresh_token'),
       access_token: localStorage.getItem('access_token'),
       token_type: localStorage.getItem('token_type'),
     };
@@ -214,6 +222,7 @@ export class AuthorizeService {
   public async signOut(state: any): Promise<IAuthenticationResult> {
     localStorage.removeItem('name');
     localStorage.removeItem('role');
+    localStorage.removeItem('refresh_token');
     localStorage.removeItem('access_token');
     localStorage.removeItem('token_type');
 

@@ -18,5 +18,7 @@ namespace Identity.Service.Models
         public string Password { get; set; }
         [BsonElement("Role")]
         public string Role { get; set; }
+        [BsonElement("RefreshToken")]
+        public string RefreshToken { get; set; }
     }
 }

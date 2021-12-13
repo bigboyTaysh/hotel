@@ -20,17 +20,22 @@ namespace Identity.Service.Services
     {
         private readonly IMongoCollection<User> _users;
         private readonly string _key;
+        private readonly UserService _userService;
 
-        public IdentityService(IDatabaseSettings settings, IConfiguration config)
+        public IdentityService(
+            IDatabaseSettings settings,
+            IConfiguration config,
+            UserService userService)
         {
             var client = new MongoClient(settings.ConnectionString);
             var database = client.GetDatabase(settings.DatabaseName);
 
             _users = database.GetCollection<User>(settings.CollectionName);
             _key = config.GetSection("SecretKey").Value;
+            _userService = userService;
         }
 
-        public string Authenticate(LoginUser loginUser)
+        public Token Authenticate(LoginUser loginUser)
         {
             using (SHA256 sha256Hash = SHA256.Create())
             {
@@ -42,6 +47,19 @@ namespace Identity.Service.Services
             if (user == null)
                 return null;
 
+            var refreshToken = GetToken(user, DateTime.UtcNow.AddDays(4));
+            var accessToken = GetToken(user, DateTime.UtcNow.AddMinutes(1));
+
+            user.RefreshToken = refreshToken;
+            user.Password = null;
+            _userService.Update(user);
+
+            return new Token() { RefreshToken = refreshToken, AccessToken = accessToken };
+
+        }
+
+        private string GetToken(User user, DateTime expires)
+        {
             var tokenHandler = new JwtSecurityTokenHandler();
             var tokenKey = Encoding.ASCII.GetBytes(_key);
             var tokenDescriptor = new SecurityTokenDescriptor()
@@ -52,14 +70,13 @@ namespace Identity.Service.Services
                     new Claim(ClaimTypes.Role, user.Role)
                 }),
 
-                Expires = DateTime.UtcNow.AddHours(1),
+                Expires = expires,
 
                 SigningCredentials = new SigningCredentials(
                     new SymmetricSecurityKey(tokenKey),
                     SecurityAlgorithms.HmacSha256Signature
                 )
             };
-
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
             return tokenHandler.WriteToken(token);

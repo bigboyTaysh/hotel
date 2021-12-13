@@ -57,7 +57,7 @@ namespace HotelApp.Controllers
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
-                return Ok(response.Content.ReadAsStringAsync().Result);
+                return Ok(response.Content.ReadAsAsync<Token>().Result);
             }
             else
             {

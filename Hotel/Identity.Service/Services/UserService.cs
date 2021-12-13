@@ -50,7 +50,7 @@ namespace Identity.Service.Services
                 }
             }
 
-            return _users.ReplaceOne(user => user.Id == userIn.Id, userIn);
+            return _users. ReplaceOne(user => user.Id == userIn.Id, userIn);
         }
 
         public DeleteResult Remove(string id)
