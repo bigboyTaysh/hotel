@@ -55,7 +55,17 @@ namespace Identity.Service.Services
             _userService.Update(user);
 
             return new Token() { RefreshToken = refreshToken, AccessToken = accessToken };
+        }
 
+        public void Logout(string token)
+        {
+            var user = _userService.GetUserByToken(token);
+            if (user == null)
+                return;
+
+            user.RefreshToken = null;
+            user.Password = null;
+            _userService.Update(user);
         }
 
         private string GetToken(User user, DateTime expires)

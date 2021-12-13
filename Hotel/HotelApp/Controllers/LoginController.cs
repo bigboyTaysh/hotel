@@ -22,7 +22,7 @@ using System.Threading;
 
 namespace HotelApp.Controllers
 {
-    [Route("authentication/[controller]")]
+    [Route("authentication/")]
     [ApiController]
     public class LoginController : ControllerBase
     {
@@ -42,6 +42,7 @@ namespace HotelApp.Controllers
             public string Password { get; set; }
         }
 
+        [Route("login")]
         [HttpPost]
         public async Task<IActionResult> OnPostAsync(InputModel inputModel)
         {
@@ -53,7 +54,7 @@ namespace HotelApp.Controllers
             string json = JsonConvert.SerializeObject(new { Login = inputModel.Login, Password = inputModel.Password });
             StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
 
-            HttpResponseMessage response = await _client.PostAsync(_identityServiceUrl, httpContent);
+            HttpResponseMessage response = await _client.PostAsync(_identityServiceUrl + "authenticate/", httpContent);
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
@@ -66,16 +67,24 @@ namespace HotelApp.Controllers
             }
         }
 
-        // PUT api/<LoginController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [Route("logout")]
+        [HttpPost]
+        public async Task<IActionResult> OnPostLogoutAsync(LogoutUser token)
         {
-        }
+            string json = JsonConvert.SerializeObject(token);
+            StringContent httpContent = new StringContent(json, Encoding.UTF8, "application/json");
 
-        // DELETE api/<LoginController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            HttpResponseMessage response = await _client.PostAsync(_identityServiceUrl + "logout/", httpContent);
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                return Ok();
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Invalid logout attempt.");
+                return Unauthorized(ModelState);
+            }
         }
     }
 }

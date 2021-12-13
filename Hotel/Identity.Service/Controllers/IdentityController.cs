@@ -26,5 +26,14 @@ namespace Identity.Service.Controllers
 
             return Ok(token);
         }
+
+        [Route("logout")]
+        [HttpPost]
+        public ActionResult Logout(LogoutUser token)
+        {
+            service.Logout(token.Token);
+
+            return Ok();
+        }
     }
 }

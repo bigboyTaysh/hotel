@@ -220,6 +220,20 @@ export class AuthorizeService {
   }
 
   public async signOut(state: any): Promise<IAuthenticationResult> {
+    let user;
+    this.getUser().subscribe(value => user = value);
+    
+    await fetch(ApplicationPaths.LogOut, {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      body: JSON.stringify({
+          token: user.refresh_token
+        })
+    });
+
     localStorage.removeItem('name');
     localStorage.removeItem('role');
     localStorage.removeItem('refresh_token');
