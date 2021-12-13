@@ -4,6 +4,7 @@ import { BehaviorSubject, concat, from, Observable } from 'rxjs';
 import { filter, map, mergeMap, take, tap } from 'rxjs/operators';
 import { ApplicationPaths, ApplicationName } from './api-authorization.constants';
 import jwt_decode from 'jwt-decode';
+import { Router } from '@angular/router';
 
 export type IAuthenticationResult =
   SuccessAuthenticationResult |
@@ -106,6 +107,8 @@ export class AuthorizeService {
   // By default pop ups are disabled because they don't work properly on Edge.
   // If you want to enable pop up authentication simply set this flag to false.
 
+  constructor(private router: Router) {}
+
   private userSubject: BehaviorSubject<User | null> = new BehaviorSubject(null);
 
   public async signIn(credentials: any, state: any): Promise<IAuthenticationResult> {
@@ -139,6 +142,30 @@ export class AuthorizeService {
     this.userSubject.next(user);
     this.setUserToStorage(user);
 
+    return this.success(state);
+  }
+
+  public async signOut(state: any): Promise<IAuthenticationResult> {
+    let user;
+    this.getUser().subscribe(value => user = value);
+    
+    await fetch(ApplicationPaths.LogOut, {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      body: JSON.stringify({
+          token: user.refresh_token
+        })
+    });
+
+    localStorage.removeItem('name');
+    localStorage.removeItem('role');
+    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('token_type');
+
+    this.userSubject.next(null);
     return this.success(state);
   }
 
@@ -218,28 +245,61 @@ export class AuthorizeService {
     }
   }
 
-  public async signOut(state: any): Promise<IAuthenticationResult> {
+  async checkToken(token: string): Promise<string> {
     let user;
     this.getUser().subscribe(value => user = value);
-    
-    await fetch(ApplicationPaths.LogOut, {
+
+    if(!this.isTokenExpired(token)){
+      console.log("Token is not expired");
+      return token;
+    }
+
+    const response = await fetch(ApplicationPaths.Token, {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${user.refresh_token}`
       },
       method: 'POST',
-      body: JSON.stringify({
-          token: user.refresh_token
-        })
     });
 
-    localStorage.removeItem('name');
-    localStorage.removeItem('role');
-    localStorage.removeItem('refresh_token');
-    localStorage.removeItem('token_type');
+    if (!response.ok) {
+      await this.signOut({ReturnUrlType: ""});
+      await this.router.navigateByUrl("authentication/login", {
+        replaceUrl: true
+      });
+    }
 
-    this.userSubject.next(null);
-    return this.success(state);
+    const newToken = await response.json();
+    const tokenInfo = this.getDecodedAccessToken(newToken.refreshToken);
+
+    const settings: any = {
+      name: tokenInfo.unique_name,
+      role: tokenInfo.role,
+      refresh_token: newToken.refreshToken,
+      access_token: newToken.accessToken,
+      token_type: 'Bearer',
+    };
+    
+    user = new User(settings);
+    this.userSubject.next(user);
+    this.setUserToStorage(user);
+
+    return newToken.accessToken;
+  }
+  
+  isTokenExpired(token: string): boolean {
+    const decoded = this.getDecodedAccessToken(token);
+    if (!decoded) {
+      return true;
+    }
+
+    const date = decoded.exp;
+    if (!date) {
+      return true;
+    }
+    console.log(date, new Date().getTime() / 1000);
+    return !(date > new Date().getTime() / 1000);
   }
 
   /*
