@@ -193,7 +193,6 @@ export class AuthorizeService {
       name: localStorage.getItem('name'),
       role: localStorage.getItem('role'),
       refresh_token: localStorage.getItem('refresh_token'),
-      access_token: localStorage.getItem('access_token'),
       token_type: localStorage.getItem('token_type'),
     };
 
@@ -237,7 +236,6 @@ export class AuthorizeService {
     localStorage.removeItem('name');
     localStorage.removeItem('role');
     localStorage.removeItem('refresh_token');
-    localStorage.removeItem('access_token');
     localStorage.removeItem('token_type');
 
     this.userSubject.next(null);
