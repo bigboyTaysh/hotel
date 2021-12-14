@@ -128,7 +128,7 @@ export class AuthorizeService {
     }
 
     const token = await response.json();
-    const tokenInfo = this.getDecodedAccessToken(token.refreshToken);
+    const tokenInfo = this.getDecodedAccessToken(token.accessToken);
 
     const settings: any = {
       name: tokenInfo.unique_name,
@@ -250,7 +250,6 @@ export class AuthorizeService {
     this.getUser().subscribe(value => user = value);
 
     if(!this.isTokenExpired(token)){
-      console.log("Token is not expired");
       return token;
     }
 
@@ -268,24 +267,23 @@ export class AuthorizeService {
       await this.router.navigateByUrl("authentication/login", {
         replaceUrl: true
       });
+    } else {
+      const newToken = await response.json();
+      const tokenInfo = this.getDecodedAccessToken(newToken.refreshToken);
+  
+      const settings: any = {
+        name: tokenInfo.unique_name,
+        role: tokenInfo.role,
+        refresh_token: newToken.refreshToken,
+        access_token: newToken.accessToken,
+        token_type: 'Bearer',
+      };
+      
+      this.userSubject.next(new User(settings));
+      this.setUserToStorage(user);
+  
+      return newToken.accessToken;
     }
-
-    const newToken = await response.json();
-    const tokenInfo = this.getDecodedAccessToken(newToken.refreshToken);
-
-    const settings: any = {
-      name: tokenInfo.unique_name,
-      role: tokenInfo.role,
-      refresh_token: newToken.refreshToken,
-      access_token: newToken.accessToken,
-      token_type: 'Bearer',
-    };
-    
-    user = new User(settings);
-    this.userSubject.next(user);
-    this.setUserToStorage(user);
-
-    return newToken.accessToken;
   }
   
   isTokenExpired(token: string): boolean {

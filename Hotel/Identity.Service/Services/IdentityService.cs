@@ -47,8 +47,8 @@ namespace Identity.Service.Services
             if (user == null)
                 return null;
 
-            var refreshToken = GetToken(user, DateTime.UtcNow.AddDays(4));
-            var accessToken = GetToken(user, DateTime.UtcNow.AddSeconds(10));
+            var refreshToken = GetToken(user, DateTime.UtcNow.AddDays(4), true);
+            var accessToken = GetToken(user, DateTime.UtcNow.AddSeconds(10), false);
 
             user.RefreshToken = refreshToken;
             user.Password = null;
@@ -73,24 +73,27 @@ namespace Identity.Service.Services
             var replacedToken = token.Replace("Bearer ", string.Empty);
             var handler = new JwtSecurityTokenHandler();
             var securityToken = handler.ReadJwtToken(replacedToken);
-            var claims = new List<string> { "unique_name", "role" };
+            var claim = "unique_name";
 
             var cos = DateTime.Now;
             var cos2 = securityToken.ValidTo;
 
             if (securityToken.ValidTo < DateTime.Now ||
-                !claims.All(claim => securityToken.Claims.Any(c => c.Type == claim)))
+                !securityToken.Claims.Any(c => c.Type == claim))
             {
                 return null;
             }
 
             var user = _userService.GetUserByToken(replacedToken);
 
-            if (user == null)
+            if (user == null ||
+                user?.Login == securityToken.Claims.FirstOrDefault(c => c.Type == claim).Value)
+            {
                 return null;
+            }    
 
-            var refreshToken = GetToken(user, DateTime.UtcNow.AddDays(4));
-            var accessToken = GetToken(user, DateTime.UtcNow.AddSeconds(10));
+            var refreshToken = GetToken(user, DateTime.UtcNow.AddDays(4), true);
+            var accessToken = GetToken(user, DateTime.UtcNow.AddSeconds(10), false);
 
             user.RefreshToken = refreshToken;
             user.Password = null;
@@ -99,7 +102,7 @@ namespace Identity.Service.Services
             return new Token() { RefreshToken = refreshToken, AccessToken = accessToken };
         }
 
-        private string GetToken(User user, DateTime expires)
+        private string GetToken(User user, DateTime expires, bool isRefreshToken)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var tokenKey = Encoding.ASCII.GetBytes(_key);
@@ -108,7 +111,7 @@ namespace Identity.Service.Services
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.Name, user.Login),
-                    new Claim(ClaimTypes.Role, user.Role)
+                    isRefreshToken ? null : new Claim(ClaimTypes.Role, user.Role)
                 }),
 
                 Expires = expires,
