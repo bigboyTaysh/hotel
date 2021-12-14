@@ -269,7 +269,7 @@ export class AuthorizeService {
       });
     } else {
       const newToken = await response.json();
-      const tokenInfo = this.getDecodedAccessToken(newToken.refreshToken);
+      const tokenInfo = this.getDecodedAccessToken(newToken.accessToken);
   
       const settings: any = {
         name: tokenInfo.unique_name,
@@ -296,7 +296,7 @@ export class AuthorizeService {
     if (!date) {
       return true;
     }
-    console.log(date, new Date().getTime() / 1000);
+
     return !(date > new Date().getTime() / 1000);
   }
 

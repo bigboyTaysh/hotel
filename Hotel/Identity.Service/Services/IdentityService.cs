@@ -48,7 +48,7 @@ namespace Identity.Service.Services
                 return null;
 
             var refreshToken = GetToken(user, DateTime.UtcNow.AddDays(4), true);
-            var accessToken = GetToken(user, DateTime.UtcNow.AddSeconds(10), false);
+            var accessToken = GetToken(user, DateTime.UtcNow.AddSeconds(30), false);
 
             user.RefreshToken = refreshToken;
             user.Password = null;
@@ -75,9 +75,6 @@ namespace Identity.Service.Services
             var securityToken = handler.ReadJwtToken(replacedToken);
             var claim = "unique_name";
 
-            var cos = DateTime.Now;
-            var cos2 = securityToken.ValidTo;
-
             if (securityToken.ValidTo < DateTime.Now ||
                 !securityToken.Claims.Any(c => c.Type == claim))
             {
@@ -87,13 +84,13 @@ namespace Identity.Service.Services
             var user = _userService.GetUserByToken(replacedToken);
 
             if (user == null ||
-                user?.Login == securityToken.Claims.FirstOrDefault(c => c.Type == claim).Value)
+                user?.Login != securityToken.Claims.FirstOrDefault(c => c.Type == claim).Value)
             {
                 return null;
             }    
 
             var refreshToken = GetToken(user, DateTime.UtcNow.AddDays(4), true);
-            var accessToken = GetToken(user, DateTime.UtcNow.AddSeconds(10), false);
+            var accessToken = GetToken(user, DateTime.UtcNow.AddSeconds(30), false);
 
             user.RefreshToken = refreshToken;
             user.Password = null;
