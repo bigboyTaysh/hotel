@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError, timer } from 'rxjs';
 import { AuthorizeService } from './authorize.service';
-import { mergeMap } from 'rxjs/operators';
+import { catchError, mergeMap, retryWhen, take } from 'rxjs/operators';
+
 
 @Injectable({
   providedIn: 'root'
@@ -29,7 +30,19 @@ export class AuthorizeInterceptor implements HttpInterceptor {
       });
     }
 
-    return next.handle(req);
+    return next.handle(req)
+    .pipe(
+      retryWhen(errors => {
+        return errors
+          .pipe(
+            mergeMap(error=>error.status === 401 ? timer(0) : throwError(error)),
+            take(1)
+          )
+      }),
+      catchError((error: HttpErrorResponse) => {
+        return throwError(error);
+      })
+    )
   }
 
   private isSameOriginUrl(req: any) {

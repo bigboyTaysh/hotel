@@ -253,6 +253,10 @@ export class AuthorizeService {
       return token;
     }
 
+    if (user == null) {
+      return;
+    }
+
     const response = await fetch(ApplicationPaths.Token, {
       headers: {
         'Accept': 'application/json',
