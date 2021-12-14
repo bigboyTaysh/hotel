@@ -13,15 +13,13 @@ export class AuthorizeInterceptor implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return this.authorize.getAccessToken()
-      .pipe(mergeMap(token => this.processRequestWithToken(token, req, next)));
+      .pipe(take(1), mergeMap(token => this.processRequestWithToken(token, req, next)));
   }
 
   // Checks if there is an access_token available in the authorize service
   // and adds it to the request in case it's targeted at the same origin as the
   // single page application.
   private processRequestWithToken(token: string, req: HttpRequest<any>, next: HttpHandler) {
-    this.authorize.checkToken(token).then(token => token);
-
     if (!!token && this.isSameOriginUrl(req)) {
       req = req.clone({
         setHeaders: {
@@ -31,18 +29,13 @@ export class AuthorizeInterceptor implements HttpInterceptor {
     }
 
     return next.handle(req)
-    .pipe(
-      retryWhen(errors => {
-        return errors
-          .pipe(
-            mergeMap(error=>error.status === 401 ? timer(0) : throwError(error)),
-            take(1)
-          )
-      }),
-      catchError((error: HttpErrorResponse) => {
-        return throwError(error);
-      })
-    )
+      .pipe(catchError(err => {
+        if (err instanceof HttpErrorResponse) {
+          if (err.status === 401) {
+            return this.authorize.sendReqWithNewToken(token, req, next);
+          }
+        }
+      }));
   }
 
   private isSameOriginUrl(req: any) {

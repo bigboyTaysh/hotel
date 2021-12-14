@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 //import { User, UserManager, WebStorageStateStore } from 'oidc-client';
-import { BehaviorSubject, concat, from, Observable } from 'rxjs';
+import { BehaviorSubject, concat, from, Observable, ObservableInput } from 'rxjs';
 import { filter, map, mergeMap, take, tap } from 'rxjs/operators';
 import { ApplicationPaths, ApplicationName } from './api-authorization.constants';
 import jwt_decode from 'jwt-decode';
 import { Router } from '@angular/router';
+import { HttpEvent, HttpHandler, HttpRequest } from '@angular/common/http';
 
 export type IAuthenticationResult =
   SuccessAuthenticationResult |
@@ -245,12 +246,12 @@ export class AuthorizeService {
     }
   }
 
-  async checkToken(token: string): Promise<string> {
+  async sendReqWithNewToken(token: string, req: HttpRequest<any>, next: HttpHandler): Promise<any> {
     let user;
     this.getUser().subscribe(value => user = value);
 
     if(!this.isTokenExpired(token)){
-      return token;
+      return;
     }
 
     if (user == null) {
@@ -286,7 +287,13 @@ export class AuthorizeService {
       this.userSubject.next(new User(settings));
       this.setUserToStorage(user);
   
-      return newToken.accessToken;
+      req = req.clone({
+        setHeaders: {
+          Authorization: `Bearer ${newToken.accessToken}`
+        }
+      });
+
+      return next.handle(req).toPromise();
     }
   }
   
