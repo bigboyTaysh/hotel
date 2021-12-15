@@ -5,7 +5,7 @@ This web application supports hotel management, including:
 * room management
 * reservations management
 
-Architecture is based on microservices. It contains single api interfaces as a services with separate databases, an intermediary interface and a client application. Each services is secured and the ability to get data is verified using a JWT token issued by Identity.Service when logging in.
+Architecture is based on microservices. It contains single api interfaces as a services with separate databases, an intermediary interface and a client application. Each services is secured and the ability to get data is verified using a **JWT tokens (access and refresh)** issued by Identity.Service when logging in. [ClientApp](https://github.com/bigboyTaysh/hotel/tree/master/Hotel/HotelApp/ClientApp) uses the **silent refresh** to refresh the access token with a refresh token after the access token has expired. 
 
 ### Services:
 * [Identity.Service](https://github.com/bigboyTaysh/hotel/tree/master/Hotel/Identity.Service), which is responsible for users management, logging in and issuing a JWT token.
