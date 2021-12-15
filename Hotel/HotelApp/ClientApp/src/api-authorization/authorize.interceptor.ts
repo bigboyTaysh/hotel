@@ -16,9 +16,6 @@ export class AuthorizeInterceptor implements HttpInterceptor {
       .pipe(take(1), mergeMap(token => this.processRequestWithToken(token, req, next)));
   }
 
-  // Checks if there is an access_token available in the authorize service
-  // and adds it to the request in case it's targeted at the same origin as the
-  // single page application.
   private processRequestWithToken(token: string, req: HttpRequest<any>, next: HttpHandler) {
     if (!!token && this.isSameOriginUrl(req)) {
       req = req.clone({

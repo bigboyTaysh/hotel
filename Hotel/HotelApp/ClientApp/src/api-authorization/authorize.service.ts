@@ -198,7 +198,6 @@ export class AuthorizeService {
     localStorage.setItem("name", user.name);
     localStorage.setItem("role", user.role);
     localStorage.setItem("refresh_token", user.refresh_token);
-    localStorage.setItem("access_token", user.access_token);
     localStorage.setItem("token_type", user.token_type);
   }
 

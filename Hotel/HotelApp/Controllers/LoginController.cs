@@ -46,11 +46,6 @@ namespace HotelApp.Controllers
         [HttpPost]
         public async Task<IActionResult> OnPostAsync(InputModel inputModel)
         {
-
-            // This doesn't count login failures towards account lockout
-            // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-            //var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
-
             string json = JsonConvert.SerializeObject(new { Login = inputModel.Login, Password = inputModel.Password });
             StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
 
