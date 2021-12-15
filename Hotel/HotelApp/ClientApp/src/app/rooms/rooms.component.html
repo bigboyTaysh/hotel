@@ -1,4 +1,5 @@
 <p *ngIf="!rooms"><em>Loading...</em></p>
+<p *ngIf="!error"><em>{{error}}</em></p>
 
 <a [routerLink]="['add']" class="btn btn-primary">Add room</a>
 <table class='table table-striped' aria-labelledby="tableLabel" *ngIf="rooms">

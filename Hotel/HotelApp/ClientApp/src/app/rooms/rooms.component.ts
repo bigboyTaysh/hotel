@@ -9,11 +9,17 @@ import { Component, Inject, OnInit } from '@angular/core';
 
 export class RoomsComponent {
   public rooms: Room[];
+  public error: String;
 
   constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) {
+    this.error = "";
     http.get<Room[]>(baseUrl + 'api/rooms').subscribe(result => {
       this.rooms = result;
-    }, error => console.error(error));
+      this.error = "";
+    }, error => {
+      console.error(error);
+      this.error = "No access to data";
+    });
   }
 
   onDelete(id: string) {

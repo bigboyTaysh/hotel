@@ -1,6 +1,7 @@
 ﻿using Identity.Service.Models;
 using Identity.Service.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Primitives;
 
 namespace Identity.Service.Controllers
 {
@@ -25,6 +26,31 @@ namespace Identity.Service.Controllers
                 return Unauthorized();
 
             return Ok(token);
+        }
+
+        [Route("logout")]
+        [HttpPost]
+        public ActionResult Logout(LogoutUser token)
+        {
+            service.Logout(token.Token);
+
+            return Ok();
+        }
+
+        [Route("token")]
+        [HttpPost]
+        public ActionResult GetToken()
+        {
+            Request.Headers.TryGetValue("Authorization", out var token);
+            if (string.IsNullOrEmpty(token))
+                return Unauthorized();
+
+            var newToken = service.GetNewToken(token);
+
+            if (newToken == null)
+                return Unauthorized();
+
+            return Ok(newToken);
         }
     }
 }

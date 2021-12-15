@@ -22,7 +22,7 @@ using System.Threading;
 
 namespace HotelApp.Controllers
 {
-    [Route("authentication/[controller]")]
+    [Route("authentication/")]
     [ApiController]
     public class LoginController : ControllerBase
     {
@@ -42,22 +42,18 @@ namespace HotelApp.Controllers
             public string Password { get; set; }
         }
 
+        [Route("login")]
         [HttpPost]
         public async Task<IActionResult> OnPostAsync(InputModel inputModel)
         {
-
-            // This doesn't count login failures towards account lockout
-            // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-            //var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
-
             string json = JsonConvert.SerializeObject(new { Login = inputModel.Login, Password = inputModel.Password });
             StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
 
-            HttpResponseMessage response = await _client.PostAsync(_identityServiceUrl, httpContent);
+            HttpResponseMessage response = await _client.PostAsync(_identityServiceUrl + "authenticate/", httpContent);
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
-                return Ok(response.Content.ReadAsStringAsync().Result);
+                return Ok(response.Content.ReadAsAsync<Token>().Result);
             }
             else
             {
@@ -66,16 +62,47 @@ namespace HotelApp.Controllers
             }
         }
 
-        // PUT api/<LoginController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [Route("logout")]
+        [HttpPost]
+        public async Task<IActionResult> OnPostLogoutAsync(LogoutUser token)
         {
+            string json = JsonConvert.SerializeObject(token);
+            StringContent httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+            HttpResponseMessage response = await _client.PostAsync(_identityServiceUrl + "logout/", httpContent);
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                return Ok();
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Invalid logout attempt.");
+                return Unauthorized(ModelState);
+            }
         }
 
-        // DELETE api/<LoginController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [Route("token")]
+        [HttpPost]
+        public async Task<IActionResult> OnPostTokenAsync()
         {
+            Request.Headers.TryGetValue("Authorization", out var token);
+            if (string.IsNullOrEmpty(token))
+                return Unauthorized();
+            _client.DefaultRequestHeaders.Add("Authorization", token.FirstOrDefault());
+
+            HttpResponseMessage response = await _client.PostAsync(_identityServiceUrl + "token/", null);
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var resp = response.Content.ReadAsAsync<Token>().Result;
+                return Ok(resp);
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Invalid get a token attempt.");
+                return Unauthorized(ModelState);
+            }
         }
     }
 }

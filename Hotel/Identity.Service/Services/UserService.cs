@@ -24,6 +24,10 @@ namespace Identity.Service.Services
         public List<User> GetUsers() => _users.Find(user => true).ToList();
 
         public User GetUser(string id) => _users.Find(user => user.Id == id).FirstOrDefault();
+        
+        public User GetUserByName(string login) => _users.Find(user => user.Login == login).FirstOrDefault();
+        
+        public User GetUserByToken(string token) => _users.Find(user => user.RefreshToken == token).FirstOrDefault();
 
         public User Create(User user)
         {
@@ -50,7 +54,7 @@ namespace Identity.Service.Services
                 }
             }
 
-            return _users.ReplaceOne(user => user.Id == userIn.Id, userIn);
+            return _users. ReplaceOne(user => user.Id == userIn.Id, userIn);
         }
 
         public DeleteResult Remove(string id)

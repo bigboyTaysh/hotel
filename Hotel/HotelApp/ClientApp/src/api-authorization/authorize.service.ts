@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 //import { User, UserManager, WebStorageStateStore } from 'oidc-client';
-import { BehaviorSubject, concat, from, Observable } from 'rxjs';
+import { BehaviorSubject, concat, from, Observable, ObservableInput } from 'rxjs';
 import { filter, map, mergeMap, take, tap } from 'rxjs/operators';
 import { ApplicationPaths, ApplicationName } from './api-authorization.constants';
 import jwt_decode from 'jwt-decode';
+import { Router } from '@angular/router';
+import { HttpEvent, HttpHandler, HttpRequest } from '@angular/common/http';
 
 export type IAuthenticationResult =
   SuccessAuthenticationResult |
@@ -28,6 +30,11 @@ export enum AuthenticationResultStatus {
   Success,
   Redirect,
   Fail
+}
+
+export interface Token {
+  access_token: string;
+  refresh_token: string;
 }
 
 export interface UserSettings {
@@ -101,6 +108,8 @@ export class AuthorizeService {
   // By default pop ups are disabled because they don't work properly on Edge.
   // If you want to enable pop up authentication simply set this flag to false.
 
+  constructor(private router: Router) {}
+
   private userSubject: BehaviorSubject<User | null> = new BehaviorSubject(null);
 
   public async signIn(credentials: any, state: any): Promise<IAuthenticationResult> {
@@ -120,12 +129,13 @@ export class AuthorizeService {
     }
 
     const token = await response.json();
-    const tokenInfo = this.getDecodedAccessToken(token);
+    const tokenInfo = this.getDecodedAccessToken(token.accessToken);
 
     const settings: any = {
       name: tokenInfo.unique_name,
       role: tokenInfo.role,
-      access_token: token,
+      refresh_token: token.refreshToken,
+      access_token: token.accessToken,
       token_type: 'Bearer',
     };
     
@@ -133,6 +143,30 @@ export class AuthorizeService {
     this.userSubject.next(user);
     this.setUserToStorage(user);
 
+    return this.success(state);
+  }
+
+  public async signOut(state: any): Promise<IAuthenticationResult> {
+    let user;
+    this.getUser().subscribe(value => user = value);
+    
+    await fetch(ApplicationPaths.LogOut, {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      body: JSON.stringify({
+          token: user.refresh_token
+        })
+    });
+
+    localStorage.removeItem('name');
+    localStorage.removeItem('role');
+    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('token_type');
+
+    this.userSubject.next(null);
     return this.success(state);
   }
 
@@ -163,7 +197,7 @@ export class AuthorizeService {
   private setUserToStorage(user: User) {
     localStorage.setItem("name", user.name);
     localStorage.setItem("role", user.role);
-    localStorage.setItem("access_token", user.access_token);
+    localStorage.setItem("refresh_token", user.refresh_token);
     localStorage.setItem("token_type", user.token_type);
   }
 
@@ -185,7 +219,7 @@ export class AuthorizeService {
     const settings: any = {
       name: localStorage.getItem('name'),
       role: localStorage.getItem('role'),
-      access_token: localStorage.getItem('access_token'),
+      refresh_token: localStorage.getItem('refresh_token'),
       token_type: localStorage.getItem('token_type'),
     };
 
@@ -211,14 +245,69 @@ export class AuthorizeService {
     }
   }
 
-  public async signOut(state: any): Promise<IAuthenticationResult> {
-    localStorage.removeItem('name');
-    localStorage.removeItem('role');
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('token_type');
+  async sendReqWithNewToken(token: string, req: HttpRequest<any>, next: HttpHandler): Promise<any> {
+    let user;
+    this.getUser().subscribe(value => user = value);
 
-    this.userSubject.next(null);
-    return this.success(state);
+    if(!this.isTokenExpired(token)){
+      return;
+    }
+
+    if (user == null) {
+      return;
+    }
+
+    const response = await fetch(ApplicationPaths.Token, {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${user.refresh_token}`
+      },
+      method: 'POST',
+    });
+
+    if (!response.ok) {
+      await this.signOut({ReturnUrlType: ""});
+      await this.router.navigateByUrl("authentication/login", {
+        replaceUrl: true
+      });
+    } else {
+      const newToken = await response.json();
+      const tokenInfo = this.getDecodedAccessToken(newToken.accessToken);
+  
+      const settings: any = {
+        name: tokenInfo.unique_name,
+        role: tokenInfo.role,
+        refresh_token: newToken.refreshToken,
+        access_token: newToken.accessToken,
+        token_type: 'Bearer',
+      };
+      
+      this.userSubject.next(new User(settings));
+      this.setUserToStorage(user);
+  
+      req = req.clone({
+        setHeaders: {
+          Authorization: `Bearer ${newToken.accessToken}`
+        }
+      });
+
+      return next.handle(req).toPromise();
+    }
+  }
+  
+  isTokenExpired(token: string): boolean {
+    const decoded = this.getDecodedAccessToken(token);
+    if (!decoded) {
+      return true;
+    }
+
+    const date = decoded.exp;
+    if (!date) {
+      return true;
+    }
+
+    return !(date > new Date().getTime() / 1000);
   }
 
   /*

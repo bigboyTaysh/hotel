@@ -36,7 +36,7 @@ namespace HotelApp.Controllers
         public async Task<ActionResult> Get()
         {
             Request.Headers.TryGetValue("Authorization", out var token);
-            if (StringValues.IsNullOrEmpty(token))
+            if (string.IsNullOrEmpty(token))
                 return Unauthorized();
             _client.DefaultRequestHeaders.Add("Authorization", token.FirstOrDefault());
 
@@ -57,7 +57,7 @@ namespace HotelApp.Controllers
         public async Task<ActionResult> Get(string id)
         {
             Request.Headers.TryGetValue("Authorization", out var token);
-            if (StringValues.IsNullOrEmpty(token))
+            if (string.IsNullOrEmpty(token))
                 return Unauthorized();
             _client.DefaultRequestHeaders.Add("Authorization", token.FirstOrDefault());
 
@@ -79,7 +79,7 @@ namespace HotelApp.Controllers
         {
             Request.Headers.TryGetValue("Authorization", out var token);
 
-            if (StringValues.IsNullOrEmpty(token))
+            if (string.IsNullOrEmpty(token))
                 return Unauthorized("Empty token");
             _client.DefaultRequestHeaders.Add("Authorization", token.FirstOrDefault());
 
@@ -102,7 +102,7 @@ namespace HotelApp.Controllers
         public async Task<ActionResult> Put(Room room)
         {
             Request.Headers.TryGetValue("Authorization", out var token);
-            if (StringValues.IsNullOrEmpty(token))
+            if (string.IsNullOrEmpty(token))
                 return Unauthorized("Empty token");
             _client.DefaultRequestHeaders.Add("Authorization", token.FirstOrDefault());
 
@@ -125,8 +125,7 @@ namespace HotelApp.Controllers
         public async Task<ActionResult> Delete(string id)
         {
             Request.Headers.TryGetValue("Authorization", out var token);
-
-            if (StringValues.IsNullOrEmpty(token))
+            if (string.IsNullOrEmpty(token))
                 return Unauthorized("Empty token");
             _client.DefaultRequestHeaders.Add("Authorization", token.FirstOrDefault());
 
