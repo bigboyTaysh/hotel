@@ -26,7 +26,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mongodb-service
+  name: mongodb
   labels:
     app: mongodb
 spec:
@@ -43,7 +43,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: identityservice-deploy
+  name: identityservice
   labels:
     app: identityservice
 spec:
@@ -74,7 +74,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: identityservice-service
+  name: identityservice
   labels:
     app: identityservice
 spec:
@@ -92,7 +92,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: roomsservice-deploy
+  name: roomsservice
   labels:
     app: roomsservice
 spec:
@@ -123,7 +123,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: roomsservice-service
+  name: roomsservice
   labels:
     app: roomsservice
 spec:
@@ -173,7 +173,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: customersservice-service
+  name: customersservice
   labels:
     app: customersservice
 spec:
