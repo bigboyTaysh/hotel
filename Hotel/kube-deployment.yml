@@ -185,3 +185,53 @@ spec:
       name: http
       port: 56378
       targetPort: 80
+
+
+#reservationsservice
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reservationsservice-deploy
+  labels:
+    app: reservationsservice
+spec:
+  selector:
+    matchLabels:
+      app: reservationsservice
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: reservationsservice
+    spec:
+      containers:
+      - name: reservationsservice
+        image: reservationsservice:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "250m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: reservationsservice
+  labels:
+    app: reservationsservice
+spec:
+  type: LoadBalancer
+  selector:
+    app: reservationsservice
+  ports:
+    - protocol: TCP
+      name: http
+      port: 41355
+      targetPort: 80
