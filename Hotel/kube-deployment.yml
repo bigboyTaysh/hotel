@@ -1,0 +1,137 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongodb-deploy
+  labels:
+    app: mongodb
+spec:
+  selector:
+    matchLabels:
+      app: mongodb
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mongodb
+    spec:
+      containers:
+      - name: mongodb
+        image: mongo:5.0.5
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 27017
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-service
+  labels:
+    app: mongodb
+spec:
+  type: LoadBalancer
+  selector:
+    app: mongodb
+  ports:
+    - port: 27017
+      targetPort: 27017
+
+
+#identityservice
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: identityservice-deploy
+  labels:
+    app: identityservice
+spec:
+  selector:
+    matchLabels:
+      app: identityservice
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: identityservice
+    spec:
+      containers:
+      - name: identityservice
+        image: identityservice:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "250m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: identityservice-service
+  labels:
+    app: identityservice
+spec:
+  type: LoadBalancer
+  selector:
+    app: identityservice
+  ports:
+    - protocol: TCP
+      name: http
+      port: 61868
+      targetPort: 80
+
+#roomservice
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: roomsservice-deploy
+  labels:
+    app: roomsservice
+spec:
+  selector:
+    matchLabels:
+      app: roomsservice
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: roomsservice
+    spec:
+      containers:
+      - name: roomsservice
+        image: roomsservice:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "250m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: roomsservice-service
+  labels:
+    app: roomsservice
+spec:
+  type: LoadBalancer
+  selector:
+    app: roomsservice
+  ports:
+    - protocol: TCP
+      name: http
+      port: 56576
+      targetPort: 80
