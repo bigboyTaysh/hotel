@@ -235,3 +235,102 @@ spec:
       name: http
       port: 41355
       targetPort: 80
+
+
+#hotelapp
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hotelapp-deploy
+  labels:
+    app: hotelapp
+spec:
+  selector:
+    matchLabels:
+      app: hotelapp
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: hotelapp
+    spec:
+      containers:
+      - name: hotelapp
+        image: hotelapp:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "250m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hotelapp
+  labels:
+    app: hotelapp
+spec:
+  type: LoadBalancer
+  selector:
+    app: hotelapp
+  ports:
+    - protocol: TCP
+      name: http
+      port: 21305
+      targetPort: 80
+
+#clientapp
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clientapp-deploy
+  labels:
+    app: clientapp
+spec:
+  selector:
+    matchLabels:
+      app: clientapp
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: clientapp
+    spec:
+      containers:
+      - name: clientapp
+        image: clientapp:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "250m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: clientapp
+  labels:
+    app: clientapp
+spec:
+  type: LoadBalancer
+  selector:
+    app: clientapp
+  ports:
+    - protocol: TCP
+      name: http
+      port: 4200
+      targetPort: 80
