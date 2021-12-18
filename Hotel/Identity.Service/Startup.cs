@@ -63,7 +63,7 @@ namespace Identity.Service
                 };
             });
 
-            services.AddDiscoveryClient(Configuration);
+            //services.AddDiscoveryClient(Configuration);
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -82,9 +82,9 @@ namespace Identity.Service
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Identity.Service v1"));
             }
 
-            app.UseDiscoveryClient();
+            //app.UseDiscoveryClient();
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
 
