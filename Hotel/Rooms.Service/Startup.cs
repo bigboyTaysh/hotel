@@ -62,7 +62,7 @@ namespace Rooms.Service
                 };
             });
 
-            services.AddDiscoveryClient(Configuration);
+            //services.AddDiscoveryClient(Configuration);
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -81,9 +81,9 @@ namespace Rooms.Service
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Rooms.Service v1"));
             }
 
-            app.UseDiscoveryClient();
+            //app.UseDiscoveryClient();
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
 
