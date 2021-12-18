@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 //import { User, UserManager, WebStorageStateStore } from 'oidc-client';
 import { BehaviorSubject, concat, from, Observable, ObservableInput } from 'rxjs';
 import { filter, map, mergeMap, take, tap } from 'rxjs/operators';
@@ -108,14 +108,14 @@ export class AuthorizeService {
   // By default pop ups are disabled because they don't work properly on Edge.
   // If you want to enable pop up authentication simply set this flag to false.
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, @Inject('BASE_URL') private baseUrl: string) {}
 
   private userSubject: BehaviorSubject<User | null> = new BehaviorSubject(null);
 
   public async signIn(credentials: any, state: any): Promise<IAuthenticationResult> {
     let user: User = null;
     
-    const response = await fetch(ApplicationPaths.Login, {
+    const response = await fetch(this.baseUrl + ApplicationPaths.Login, {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
@@ -150,7 +150,7 @@ export class AuthorizeService {
     let user;
     this.getUser().subscribe(value => user = value);
     
-    await fetch(ApplicationPaths.LogOut, {
+    await fetch(this.baseUrl + ApplicationPaths.LogOut, {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
@@ -257,7 +257,7 @@ export class AuthorizeService {
       return;
     }
 
-    const response = await fetch(ApplicationPaths.Token, {
+    const response = await fetch(this.baseUrl + ApplicationPaths.Token, {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
