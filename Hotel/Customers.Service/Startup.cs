@@ -61,7 +61,7 @@ namespace Customers.Service
                 };
             });
 
-            services.AddDiscoveryClient(Configuration);
+            //services.AddDiscoveryClient(Configuration);
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -80,9 +80,9 @@ namespace Customers.Service
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Customers.Service v1"));
             }
 
-            app.UseDiscoveryClient();
+            //app.UseDiscoveryClient();
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
 

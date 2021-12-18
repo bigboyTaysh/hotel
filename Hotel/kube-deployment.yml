@@ -135,3 +135,53 @@ spec:
       name: http
       port: 56576
       targetPort: 80
+
+
+#customersservice
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: customersservice-deploy
+  labels:
+    app: customersservice
+spec:
+  selector:
+    matchLabels:
+      app: customersservice
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: customersservice
+    spec:
+      containers:
+      - name: customersservice
+        image: customersservice:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "250m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: customersservice-service
+  labels:
+    app: customersservice
+spec:
+  type: LoadBalancer
+  selector:
+    app: customersservice
+  ports:
+    - protocol: TCP
+      name: http
+      port: 56378
+      targetPort: 80
